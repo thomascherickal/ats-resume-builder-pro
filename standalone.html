@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATS Resume Builder — 4-Type Expert Optimizer</title>
+<meta name="description" content="Build ATS-optimized resumes for Internship, Fresher, Professional, and Executive roles. Real-time scoring. PDF export.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Design System ──────────────────────────── */
+:root{--bg-primary:#050608;--bg-secondary:#0a0c12;--bg-card:#0e111a;--bg-input:#07090d;--bg-hover:#161b28;--border:#2a344d;--border-focus:#00c8ff;--border-subtle:#1a2133;--text-primary:#ffffff;--text-secondary:#c5d2e8;--text-muted:#8da1c2;--accent-blue:#00c8ff;--accent-violet:#7c5cfc;--accent-green:#00e5a0;--accent-amber:#ffb020;--accent-red:#ff4560;--radius-sm:6px;--radius-md:10px;--radius-lg:16px;--font-body:'Open Sans',sans-serif;--font-mono:'Open Sans',sans-serif;--transition:0.2s cubic-bezier(.4,0,.2,1);--transition-slow:0.4s cubic-bezier(.4,0,.2,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;font-size:14px;line-height:1.6;overflow-x:hidden}
+
+/* App Shell */
+.app-wrapper{display:flex;flex-direction:column;min-height:100vh}
+.app-header{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:32px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;position:relative;z-index:100;backdrop-filter:blur(10px)}
+.header-brand{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.brand-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-violet));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:36px}
+.brand-title{font-size:34px;font-weight:800;letter-spacing:-.5px;line-height:1.2}
+.brand-title span{color:var(--accent-blue)}
+.brand-subtitle{font-size:22px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.5px;line-height:1.4}
+.header-right{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.header-badge{background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.3);color:var(--accent-blue);padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--font-mono)}
+
+/* Tab Nav */
+.tab-nav{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;color:var(--text-muted);padding:14px 18px;font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:var(--transition);white-space:nowrap;display:flex;align-items:center;gap:8px;letter-spacing:.2px}
+.tab-btn:hover{color:var(--text-primary);background:rgba(255,255,255,.03)}
+.tab-btn.active{color:var(--accent-blue);border-bottom-color:var(--accent-blue)}
+.tab-pill{font-size:12px;font-family:var(--font-mono);padding:2px 6px;border-radius:10px;font-weight:700}
+
+/* Main Layout */
+.app-main{display:grid;grid-template-columns:1fr 420px;gap:0;flex:1;min-height:100vh}
+
+/* Form Panel */
+.form-panel{border-right:1px solid var(--border);overflow-y:auto;padding:24px;background:var(--bg-primary)}
+.form-panel::-webkit-scrollbar{width:6px}
+.form-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* Preview Panel */
+.preview-panel{background:var(--bg-secondary);display:flex;flex-direction:column;overflow:hidden;position:sticky;top:0;height:100vh}
+.preview-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 16px;flex-shrink:0}
+.preview-tab-btn{background:none;border:none;color:var(--text-muted);padding:12px 16px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:var(--transition);letter-spacing:.3px}
+.preview-tab-btn.active{color:var(--accent-blue);border-bottom-color:var(--accent-blue)}
+.preview-content{flex:1;overflow-y:auto;padding:16px}
+.preview-content::-webkit-scrollbar{width:6px}
+.preview-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.preview-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0}
+
+/* Form Sections */
+.form-header{margin-bottom:24px}
+.form-type-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.25);color:var(--accent-blue);padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.form-title{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.form-subtitle{font-size:14px;color:var(--text-secondary);line-height:1.5}
+.form-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;transition:var(--transition)}
+.form-section:hover{border-color:rgba(0,200,255,.2)}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--text-primary);letter-spacing:.5px;text-transform:uppercase}
+.section-icon{width:28px;height:28px;background:rgba(0,200,255,.12);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.section-num{width:20px;height:20px;background:var(--accent-blue);color:var(--bg-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:var(--font-mono);flex-shrink:0}
+
+/* Grid & Fields */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:.5px;text-transform:uppercase}
+label .required{color:var(--accent-red);margin-left:2px}
+label .optional{color:var(--text-muted);font-size:12px;font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px}
+.field-hint{font-size:12px;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.input-tip{font-size:12px;color:var(--accent-amber);margin-top:3px;display:flex;align-items:center;gap:4px}
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],input[type=date],select,textarea{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-body);font-size:14px;padding:9px 12px;width:100%;transition:var(--transition);outline:none;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px rgba(0,200,255,.1)}
+input::placeholder,textarea::placeholder{color:var(--text-muted);font-size:13px}
+textarea{resize:vertical;min-height:80px;line-height:1.5}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b9bb4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+select option{background:var(--bg-card);color:var(--text-primary)}
+
+/* Buttons */
+.add-btn{background:rgba(0,200,255,.08);border:1px dashed rgba(0,200,255,.4);color:var(--accent-blue);padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:5px;font-family:var(--font-body)}
+.add-btn:hover{background:rgba(0,200,255,.15);border-color:var(--accent-blue)}
+.remove-btn{background:rgba(255,69,96,.08);border:1px solid rgba(255,69,96,.2);color:var(--accent-red);padding:4px 8px;border-radius:var(--radius-sm);font-size:12px;cursor:pointer;transition:var(--transition);font-family:var(--font-body);font-weight:600}
+.remove-btn:hover{background:rgba(255,69,96,.15)}
+.btn-primary{background:linear-gradient(135deg,var(--accent-blue),var(--accent-violet));color:#fff;border:none;padding:12px 24px;border-radius:var(--radius-md);font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,200,255,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(0,200,255,.4)}
+.btn-secondary{background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border);padding:12px 18px;border-radius:var(--radius-md);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:8px}
+.btn-secondary:hover{background:rgba(255,255,255,.07);color:var(--text-primary)}
+.btn-pdf{background:rgba(0,229,160,.1);color:var(--accent-green);border:1px solid rgba(0,229,160,.3);padding:12px 18px;border-radius:var(--radius-md);font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:8px}
+.btn-pdf:hover{background:rgba(0,229,160,.18)}
+.form-actions{display:flex;gap:12px;padding-top:8px;margin-top:8px}
+
+/* Dynamic Entry Cards */
+.entry-card{background:var(--bg-primary);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;margin-bottom:12px}
+.entry-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.entry-card-label{font-size:12px;font-weight:700;color:var(--accent-violet);font-family:var(--font-mono);letter-spacing:.5px}
+
+/* ATS Tip Box */
+.ats-tip-box{background:rgba(255,176,32,.06);border:1px solid rgba(255,176,32,.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px}
+.ats-tip-title{font-size:12px;font-weight:700;color:var(--accent-amber);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.ats-tip-text{font-size:12px;color:var(--text-secondary);line-height:1.5}
+
+/* Step Indicator */
+.step-indicator{display:flex;align-items:center;gap:0;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.step-dot{width:22px;height:22px;border-radius:50%;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);font-size:12px;font-weight:700;font-family:var(--font-mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--transition)}
+.step-dot.filled{background:var(--accent-blue);border-color:var(--accent-blue);color:var(--bg-primary)}
+.step-line{flex:1;height:1px;background:var(--border);min-width:12px}
+
+/* Section Divider */
+.section-divider{height:1px;background:var(--border-subtle);margin:14px 0}
+
+/* Empty State */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-state-icon{font-size:48px;margin-bottom:16px;opacity:.4}
+.empty-state-title{font-size:15px;font-weight:700;color:var(--text-secondary);margin-bottom:6px}
+.empty-state-text{font-size:13px;color:var(--text-muted);line-height:1.5}
+
+/* ATS Score Panel */
+.score-hero{background:linear-gradient(135deg,rgba(0,200,255,.08),rgba(124,92,252,.08));border:1px solid rgba(0,200,255,.15);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center}
+.score-circle{width:110px;height:110px;margin:0 auto 12px;position:relative}
+.score-circle svg{transform:rotate(-90deg)}
+.score-track{fill:none;stroke:rgba(255,255,255,.06);stroke-width:8}
+.score-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
+.score-number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:800;font-family:var(--font-mono);letter-spacing:-1px}
+.score-label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.score-grade{font-size:15px;font-weight:800;margin-top:4px;letter-spacing:.5px}
+.ats-breakdown{margin-bottom:16px}
+.breakdown-title{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.breakdown-item{margin-bottom:10px}
+.breakdown-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.breakdown-name{font-size:13px;color:var(--text-secondary);font-weight:500}
+.breakdown-score{font-size:12px;font-weight:700;font-family:var(--font-mono)}
+.breakdown-bar{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.breakdown-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.suggestions-list{display:flex;flex-direction:column;gap:8px}
+.suggestion-item{background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--accent-amber);border-radius:var(--radius-sm);padding:10px 12px}
+.suggestion-item.critical{border-left-color:var(--accent-red)}
+.suggestion-item.good{border-left-color:var(--accent-green)}
+.suggestion-item.info{border-left-color:var(--accent-blue)}
+.suggestion-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.suggestion-title{font-size:13px;font-weight:700;color:var(--text-primary)}
+.suggestion-points{font-size:12px;font-family:var(--font-mono);font-weight:700;color:var(--accent-amber);margin-left:auto}
+.suggestion-item.good .suggestion-points{color:var(--accent-green)}
+.suggestion-item.critical .suggestion-points{color:var(--accent-red)}
+.suggestion-text{font-size:12px;color:var(--text-secondary);line-height:1.5}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 20px;font-size:14px;color:var(--text-primary);z-index:1000;box-shadow:0 8px 32px rgba(0,0,0,.6);display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:var(--transition-slow)}
+.toast.show{transform:translateX(0)}
+.toast.success{border-left:3px solid var(--accent-green)}
+.toast.error{border-left:3px solid var(--accent-red)}
+.toast.info{border-left:3px solid var(--accent-blue)}
+
+/* Resume Preview Wrapper */
+.resume-preview-wrapper{background:#fff;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+
+/* Resume Doc Styles (Light Mode) */
+.resume-doc{background:#fff;color:#1a1a2e;font-family:'Open Sans','Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.5;padding:24px 28px}
+.resume-header{margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid #1a1a2e}
+.resume-name{font-size:20px;font-weight:800;color:#0a0a1a;letter-spacing:-.5px;line-height:1.2;margin-bottom:2px}
+.resume-title{font-size:12px;font-weight:600;color:#2a5298;letter-spacing:.3px;margin-bottom:6px;text-transform:uppercase}
+.resume-contact{display:flex;flex-wrap:wrap;gap:3px 10px;align-items:center}
+.resume-contact-item,.resume-contact-item a{font-size:12px;color:#2a5298;text-decoration:none}
+.contact-sep{width:3px;height:3px;border-radius:50%;background:#9999bb;display:inline-block}
+.resume-section{margin-bottom:12px}
+.resume-section-title{font-size:12px;font-weight:800;color:#0a0a1a;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1.5px solid #0a0a1a;padding-bottom:3px;margin-bottom:7px}
+.internship .resume-section-title{color:#01579b;border-bottom-color:#0277bd}
+.fresher .resume-section-title{color:#4a148c;border-bottom-color:#6a1b9a}
+.professional .resume-section-title{color:#1b5e20;border-bottom-color:#2e7d32}
+.executive .resume-section-title{color:#1a237e;border-bottom-color:#1a237e}
+.resume-summary{font-size:12px;color:#2a2a4a;line-height:1.6}
+.resume-entry{margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid #f0f0f8}
+.resume-entry:last-child{border-bottom:none}
+.entry-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:1px}
+.entry-title-block{flex:1}
+.entry-role{font-size:12px;font-weight:700;color:#0a0a1a}
+.entry-company{font-size:12px;font-weight:600;color:#2a5298}
+.entry-meta{font-size:12px;color:#6a6a8a;text-align:right;white-space:nowrap;flex-shrink:0}
+.entry-location{color:#8a8aaa}
+.entry-bullets{list-style:none;padding:0;margin:4px 0 0 0}
+.entry-bullets li{font-size:12px;color:#2a2a4a;padding-left:12px;position:relative;margin-bottom:2px;line-height:1.5}
+.entry-bullets li::before{content:'▸';position:absolute;left:0;color:#2a5298;font-size:12px;top:1px}
+.entry-link,a.entry-link{font-size:12px;color:#2a5298;text-decoration:none;display:inline-block;margin-top:2px}
+.edu-entry{margin-bottom:7px}
+.edu-degree{font-size:12px;font-weight:700;color:#0a0a1a}
+.edu-school{font-size:12px;font-weight:600;color:#2a5298}
+.edu-details,.edu-coursework{font-size:12px;color:#6a6a8a}
+.edu-coursework{font-style:italic;margin-top:2px;color:#4a4a6a}
+.skills-plain{font-size:12px;color:#2a2a4a;line-height:1.7}
+.skills-plain strong{color:#0a0a1a;font-weight:700}
+.project-entry{margin-bottom:7px}
+.project-header{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
+.project-name{font-size:12px;font-weight:700;color:#0a0a1a}
+.project-tech{font-size:12px;color:#6a6a8a;font-style:italic}
+.project-links{display:flex;gap:8px;flex-shrink:0}
+.project-link,a.project-link{font-size:12px;color:#2a5298;text-decoration:none}
+.project-desc{font-size:12px;color:#2a2a4a;margin-top:2px;line-height:1.5}
+.cert-entry{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;gap:8px}
+.cert-name{font-size:12px;font-weight:600;color:#0a0a1a}
+.cert-issuer{font-size:12px;color:#6a6a8a}
+.cert-link,a.cert-link{font-size:12px;color:#2a5298;text-decoration:none}
+.cert-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.pub-entry{margin-bottom:5px}
+.pub-title{font-size:12px;font-weight:600;color:#0a0a1a}
+.pub-venue{font-size:12px;color:#6a6a8a}
+.pub-link,a.pub-link{font-size:12px;color:#2a5298;text-decoration:none}
+.competencies-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.competency-item{font-size:12px;color:#2a2a4a;display:flex;align-items:center;gap:4px}
+.competency-item::before{content:'✦';color:#2a5298;font-size:12px}
+.board-entry{margin-bottom:5px}
+.board-role{font-size:12px;font-weight:600;color:#0a0a1a}
+.board-org{font-size:12px;color:#6a6a8a}
+.executive-highlight{background:#f8f9ff;border-left:2px solid #1a237e;padding:5px 10px;margin:4px 0;border-radius:0 3px 3px 0}
+.resume-footer{margin-top:12px;padding-top:6px;border-top:1px solid #e0e0f0;font-size:12px;color:#aaaacc;display:flex;justify-content:space-between}
+@media(max-width:960px){.app-main{grid-template-columns:1fr}.preview-panel{display:none}} @media(max-width:768px){.app-header{padding:24px 16px;}.brand-title{font-size:28px;}.brand-subtitle{font-size:16px;}.brand-icon{width:56px;height:56px;font-size:28px;}}
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+
+<!-- ══ HEADER ══ -->
+<header class="app-header">
+  <div class="header-brand">
+    <div class="brand-icon">📊</div>
+    <div>
+      <div class="brand-title">ATS<span>Resume</span></div>
+      <div class="brand-subtitle">BEAT THE BOTS. GET THE JOB.</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-badge">4 Expert Systems</span>
+    <span class="header-badge" style="background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.3);color:var(--accent-green)">Real-Time ATS</span>
+    <span class="header-badge" style="background:rgba(255,176,32,.1);border-color:rgba(255,176,32,.3);color:var(--accent-amber)">PDF Export</span>
+  </div>
+</header>
+
+<!-- ══ TABS ══ -->
+<nav class="tab-nav">
+  <button class="tab-btn active" data-type="internship" onclick="switchTab('internship')">
+    <span>🎓</span> Internship
+    <span class="tab-pill" style="background:rgba(0,200,255,.15);color:var(--accent-blue)">Student</span>
+  </button>
+  <button class="tab-btn" data-type="fresher" onclick="switchTab('fresher')">
+    <span>🌱</span> Fresher
+    <span class="tab-pill" style="background:rgba(124,92,252,.15);color:var(--accent-violet)">0-2 yrs</span>
+  </button>
+  <button class="tab-btn" data-type="professional" onclick="switchTab('professional')">
+    <span>💼</span> Professional
+    <span class="tab-pill" style="background:rgba(0,229,160,.12);color:var(--accent-green)">3-15 yrs</span>
+  </button>
+  <button class="tab-btn" data-type="executive" onclick="switchTab('executive')">
+    <span>♟</span> Executive
+    <span class="tab-pill" style="background:rgba(255,176,32,.15);color:var(--accent-amber)">C-Suite</span>
+  </button>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<main class="app-main">
+  <section class="form-panel" id="form-root"></section>
+  <aside class="preview-panel">
+    <div class="preview-tabs">
+      <button class="preview-tab-btn active" data-tab="preview" onclick="switchPreviewTab('preview')">📄 Preview</button>
+      <button class="preview-tab-btn" data-tab="ats" onclick="switchPreviewTab('ats')">🎯 ATS Score</button>
+    </div>
+    <div class="preview-content" id="preview-pane">
+      <div id="resume-preview-container"><div class="empty-state"><div class="empty-state-icon">📄</div><div class="empty-state-title">Resume Preview</div><div class="empty-state-text">Fill in the form to see your ATS-optimized resume here.</div></div></div>
+    </div>
+    <div class="preview-content" id="ats-pane" style="display:none">
+      <div id="ats-score-container"><div class="empty-state"><div class="empty-state-icon">🎯</div><div class="empty-state-title">ATS Score</div><div class="empty-state-text">Your real-time ATS score and expert tips appear here as you type.</div></div></div>
+    </div>
+    <div class="preview-actions">
+      <button class="btn-primary" style="flex:1;padding:10px;font-size:13px;justify-content:center" onclick="generateResume(AppState.activeType)">⚡ Generate</button>
+      <button class="btn-pdf" style="flex:1;padding:10px;font-size:13px;justify-content:center" onclick="downloadPDF(AppState.activeType)">⬇ PDF</button>
+      <button class="btn-secondary" style="padding:10px 12px;font-size:13px" onclick="switchPreviewTab(AppState.activePreviewTab==='preview'?'ats':'preview')">🔄</button>
+    </div>
+  </aside>
+</main>
+
+<script>
+/* ════════════════════════════════════════
+   ATS ENGINE BASE
+   ════════════════════════════════════════ */
+var ATSEngine=(function(){var A=['achieved','analyzed','built','collaborated','completed','created','designed','developed','deployed','enhanced','established','executed','generated','implemented','improved','increased','led','managed','optimized','reduced','resolved','spearheaded','streamlined','transformed','utilized','accelerated','architected','automated','delivered','drove','engineered','launched','maintained','migrated','modernized','orchestrated','pioneered','produced','published','refactored','scaled','secured','supervised','trained','upgraded','validated','coordinated','documented','evaluated','facilitated','formulated','initiated','integrated','mentored','monitored','negotiated','planned','presented','researched','reviewed','tested'];var M=[/\d+%/g,/\$\d+/g,/\d+\s*(million|billion|thousand|k|M|B)/gi,/\d+x/gi,/increased by \d+/gi,/reduced by \d+/gi,/saved \$?\d+/gi,/\d+\s*(users|clients|customers|employees|team members|projects)/gi,/\d+\s*(years|months)/gi];function cI(d){var s=0,sg=[];if(d.name&&d.name.trim().length>2)s+=5;else sg.push({type:'critical',text:'Full name is required',points:5});if(d.email&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email))s+=5;else sg.push({type:'critical',text:'Valid email address is required',points:5});if(d.phone&&d.phone.length>=10)s+=3;else sg.push({type:'warning',text:'Add a phone number',points:3});if(d.location||d.city)s+=2;else sg.push({type:'info',text:'Add city/location for local ATS filters',points:2});if(d.linkedin&&d.linkedin.length>5)s+=3;else sg.push({type:'warning',text:'LinkedIn URL boosts recruiter trust by 40%',points:3});if(d.github&&d.github.length>5)s+=2;else sg.push({type:'info',text:'GitHub profile shows technical credibility',points:2});return{score:Math.min(s,20),max:20,suggestions:sg};}
+function cAV(t){var s=0,f=[];var all=(Array.isArray(t)?t.join(' '):t||'').toLowerCase();A.forEach(function(v){if(all.indexOf(v)!==-1)f.push(v);});if(f.length>=8)s=10;else if(f.length>=5)s=7;else if(f.length>=3)s=5;else if(f.length>=1)s=2;var sg=[];if(f.length<5){var r=A.filter(function(v){return f.indexOf(v)===-1;}).slice(0,5);sg.push({type:f.length<3?'critical':'warning',text:'Use more action verbs. Try: '+r.join(', '),points:10-s});}else{sg.push({type:'good',text:'Good use of action verbs ('+f.length+' found)',points:s});}return{score:s,max:10,suggestions:sg,found:f};}
+function cQA(t){var s=0,all=(Array.isArray(t)?t.join(' '):t||''),mc=0;M.forEach(function(p){var m=all.match(p);if(m)mc+=m.length;});if(mc>=5)s=15;else if(mc>=3)s=11;else if(mc>=2)s=8;else if(mc>=1)s=4;var sg=[];if(mc<3)sg.push({type:mc===0?'critical':'warning',text:'Add quantified metrics. E.g., "Increased performance by 40%", "$2M budget", "Led team of 15"',points:15-s});else sg.push({type:'good',text:'Great! '+mc+' quantified metrics detected',points:s});return{score:s,max:15,suggestions:sg,count:mc};}
+function cOP(d){var s=0,sg=[];if(d.linkedin&&d.linkedin.length>5)s+=3;else sg.push({type:'warning',text:'Add LinkedIn profile URL',points:3});if(d.github&&d.github.length>5)s+=2;else sg.push({type:'info',text:'Add GitHub profile for technical roles',points:2});if(d.portfolio&&d.portfolio.length>5)s+=2;else sg.push({type:'info',text:'Portfolio website increases callback rate by 25%',points:2});if(d.blog&&d.blog.length>5)s+=2;else sg.push({type:'info',text:'Blog/personal site shows domain expertise',points:2});return{score:Math.min(s,10),max:10,suggestions:sg};}
+function cSS(d){var s=0,sg=[],sc=0;if(d.skills){if(Array.isArray(d.skills))sc=d.skills.length;else if(typeof d.skills==='object'){Object.keys(d.skills).forEach(function(k){var v=d.skills[k];if(Array.isArray(v))sc+=v.length;else if(typeof v==='string')sc+=v.split(',').filter(function(x){return x.trim();}).length;});}}if(sc>=15)s=10;else if(sc>=10)s=8;else if(sc>=6)s=5;else if(sc>=3)s=3;if(sc<10)sg.push({type:sc<5?'critical':'warning',text:'Add more skills. ATS needs 10-20 relevant skills. Current: '+sc,points:10-s});else sg.push({type:'good',text:sc+' skills listed — well optimized',points:s});return{score:s,max:10,suggestions:sg,count:sc};}
+function gG(s){if(s>=90)return{grade:'ATS Champion',color:'#00e5a0'};if(s>=80)return{grade:'Highly Optimized',color:'#7ce87c'};if(s>=70)return{grade:'Well Optimized',color:'#a8e063'};if(s>=60)return{grade:'Needs Improvement',color:'#ffb020'};if(s>=45)return{grade:'At Risk',color:'#ff7043'};return{grade:'ATS Unfriendly',color:'#ff4560'};}
+function gSC(s){if(s>=80)return'#00e5a0';if(s>=65)return'#7ce87c';if(s>=50)return'#ffb020';return'#ff4560';}
+return{checkContactInfo:cI,checkActionVerbs:cAV,checkQuantifiedAchievements:cQA,checkOnlinePresence:cOP,checkSkillsSection:cSS,getGrade:gG,getScoreColor:gSC};})();
+
+/* ════════════════════════════════════════
+   INTERNSHIP ATS EXPERT SYSTEM
+   ════════════════════════════════════════ */
+var InternshipATS=(function(){function analyze(d){var cats=[],allSugg=[],total=0;
+var cr=ATSEngine.checkContactInfo(d),pr=ATSEngine.checkOnlinePresence(d);
+var cs=Math.min(Math.round((cr.score+pr.score)/2*1.5),20);
+cats.push({name:'Contact & Online Presence',score:cs,max:20,suggestions:cr.suggestions.concat(pr.suggestions)});allSugg=allSugg.concat(cr.suggestions,pr.suggestions);total+=cs;
+var es=0,esg=[],em=20;var edu=(d.education||[])[0]||{};
+if(edu.university||edu.school)es+=5;else esg.push({type:'critical',text:'Add your university/college name',points:5});
+if(edu.degree&&edu.major)es+=5;else esg.push({type:'critical',text:'Add degree type and major',points:5});
+if(edu.gpa&&parseFloat(edu.gpa)>=3.0)es+=5;else if(edu.gpa)esg.push({type:'info',text:'GPA below 3.0 — consider omitting',points:0});else esg.push({type:'warning',text:'Include GPA if 7.0+/10 or 3.0+/4.0',points:5});
+if(edu.coursework&&edu.coursework.length>10)es+=5;else esg.push({type:'warning',text:'List relevant coursework for ATS keyword matching',points:5});
+cats.push({name:'Education',score:Math.min(es,em),max:em,suggestions:esg});allSugg=allSugg.concat(esg);total+=Math.min(es,em);
+var ps=0,psg=[],pm=20,proj=d.projects||[];
+if(proj.length>=3)ps+=8;else if(proj.length>=2)ps+=5;else if(proj.length>=1)ps+=2;else psg.push({type:'critical',text:'Add 2-3 projects — primary proof of skills for interns',points:8});
+var wg=proj.filter(function(p){return p.github&&p.github.length>3;});
+if(wg.length>=2)ps+=6;else if(wg.length>=1)ps+=3;else psg.push({type:'critical',text:'Add GitHub links — 78% of tech recruiters check repos',points:6});
+var wd=proj.filter(function(p){return p.demo&&p.demo.length>3;});
+if(wd.length>=1)ps+=3;else psg.push({type:'info',text:'Live demo links dramatically increase engagement',points:3});
+if(proj.filter(function(p){return p.description&&p.description.length>30;}).length>=2)ps+=3;else psg.push({type:'warning',text:'Write detailed project descriptions with impact metrics',points:3});
+cats.push({name:'Projects & GitHub',score:Math.min(ps,pm),max:pm,suggestions:psg});allSugg=allSugg.concat(psg);total+=Math.min(ps,pm);
+var sr=ATSEngine.checkSkillsSection(d),ss=Math.min(Math.round(sr.score*1.5),15);
+cats.push({name:'Technical Skills',score:ss,max:15,suggestions:sr.suggestions});allSugg=allSugg.concat(sr.suggestions);total+=ss;
+var kw=ATSEngine.checkKeywordDensity?ATSEngine.checkKeywordDensity(d,'tech'):{score:5,max:10,suggestions:[]};
+var kwScore=Math.min(kw.score,10);cats.push({name:'Keywords',score:kwScore,max:10,suggestions:kw.suggestions||[]});allSugg=allSugg.concat(kw.suggestions||[]);total+=kwScore;
+var certs=d.certifications||[],certS=0,certSg=[];
+if(certs.length>=3)certS=10;else if(certs.length>=2)certS=7;else if(certs.length>=1)certS=4;else certSg.push({type:'warning',text:'Add free certs: Google, AWS, Meta, Coursera, edX, LinkedIn Learning',points:10});
+cats.push({name:'Certifications',score:certS,max:10,suggestions:certSg});allSugg=allSugg.concat(certSg);total+=certS;
+var vr=ATSEngine.checkActionVerbs([(d.projects||[]).map(function(p){return p.description||'';}).join(' ')]);
+var vs=Math.min(Math.round(vr.score*0.5),5);
+cats.push({name:'Action Verbs',score:vs,max:5,suggestions:vr.suggestions});allSugg=allSugg.concat(vr.suggestions);total+=vs;
+total=Math.min(Math.max(Math.round(total),0),100);var gi=ATSEngine.getGrade(total);
+return{score:total,grade:gi.grade,gradeColor:gi.color,categories:cats,suggestions:allSugg.filter(function(s){return s.type!=='good';}).slice(0,9),goodItems:allSugg.filter(function(s){return s.type==='good';}),expertTips:[{type:'info',text:'💡 Lead with education — it\'s your strongest asset'},{type:'info',text:'💡 List ALL projects with GitHub links — recruiters WILL click them'},{type:'info',text:'💡 Quantify project impact: "Built app used by 200+ students"'},{type:'info',text:'💡 Free certs from Google, AWS, Meta add real ATS credibility'}]};}
+return{analyze:analyze};})();
+
+/* ════════════════════════════════════════
+   FRESHER ATS EXPERT SYSTEM
+   ════════════════════════════════════════ */
+var FresherATS=(function(){function analyze(d){var cats=[],allSugg=[],total=0;
+var cr=ATSEngine.checkContactInfo(d),pr=ATSEngine.checkOnlinePresence(d);
+var cs=Math.min(Math.round(cr.score*0.6+pr.score*0.7),15);
+cats.push({name:'Contact & Online Presence',score:cs,max:15,suggestions:cr.suggestions.concat(pr.suggestions)});allSugg=allSugg.concat(cr.suggestions,pr.suggestions);total+=cs;
+var sum=d.summary||'',sw=sum.split(/\s+/).filter(Boolean).length,ss2=0,sg2=[];
+if(sw>=40)ss2=8;else if(sw>=20)ss2=5,sg2.push({type:'warning',text:'Expand summary to include target role and top 3 skills',points:3});else if(sw>0)ss2=2,sg2.push({type:'critical',text:'Summary too brief — write 2-4 targeted sentences',points:6});else sg2.push({type:'critical',text:'Add professional summary — 40% of ATS ranks this heavily',points:8});
+cats.push({name:'Professional Summary',score:ss2,max:8,suggestions:sg2});allSugg=allSugg.concat(sg2);total+=ss2;
+var edu=(d.education||[])[0]||{},es=0,esg=[],em=12;
+if(edu.school||edu.university)es+=3;else esg.push({type:'critical',text:'Add university name',points:3});
+if(edu.degree&&edu.major)es+=4;else esg.push({type:'critical',text:'Add degree and major field of study',points:4});
+if(edu.gpa&&parseFloat(edu.gpa)>=3.0)es+=3;else esg.push({type:'warning',text:'Include GPA if 3.0 or above',points:3});
+if(edu.coursework&&edu.coursework.length>10)es+=2;else esg.push({type:'info',text:'List 4-6 relevant courses to align with job requirements',points:2});
+cats.push({name:'Education',score:Math.min(es,em),max:em,suggestions:esg});allSugg=allSugg.concat(esg);total+=Math.min(es,em);
+var sr=ATSEngine.checkSkillsSection(d),sklS=Math.min(Math.round(sr.score*1.5),15);
+cats.push({name:'Technical Skills',score:sklS,max:15,suggestions:sr.suggestions});allSugg=allSugg.concat(sr.suggestions);total+=sklS;
+var proj=d.projects||[],ps=0,psg=[],pm=15;
+if(proj.length>=3)ps+=6;else if(proj.length>=2)ps+=4;else if(proj.length>=1)ps+=2;else psg.push({type:'critical',text:'Add 2-3 significant projects with technical details',points:6});
+if(proj.filter(function(p){return p.github&&p.github.length>3;}).length>=2)ps+=5;else psg.push({type:'warning',text:'Link all projects to GitHub repositories',points:5});
+if(proj.filter(function(p){return p.description&&/\d+/.test(p.description);}).length>=1)ps+=4;else psg.push({type:'warning',text:'Add metrics to projects: users, performance, scale, accuracy',points:4});
+cats.push({name:'Projects & Portfolio',score:Math.min(ps,pm),max:pm,suggestions:psg});allSugg=allSugg.concat(psg);total+=Math.min(ps,pm);
+var exp=d.experience||[],exS=0,exSg=[],exM=12;
+if(exp.length>=2)exS=12;else if(exp.length===1){exS=7;exSg.push({type:'info',text:'More internship experience boosts your profile significantly',points:5});}
+else exSg.push({type:'critical',text:'No internship — list freelance, volunteer tech roles, or part-time work',points:12});
+cats.push({name:'Internship Experience',score:exS,max:exM,suggestions:exSg});allSugg=allSugg.concat(exSg);total+=exS;
+var certs=d.certifications||[],certS=0,certSg=[];
+if(certs.length>=3)certS=10;else if(certs.length>=2)certS=7;else if(certs.length>=1)certS=4;else certSg.push({type:'warning',text:'Add 2-3 certs. Free: Google, AWS, Meta, Coursera, edX, LinkedIn Learning',points:10});
+cats.push({name:'Certifications',score:certS,max:10,suggestions:certSg});allSugg=allSugg.concat(certSg);total+=certS;
+var pubs=d.publications||[],pubS=pubs.length>=2?5:pubs.length===1?3:0,pubSg=[];
+if(pubS===0)pubSg.push({type:'info',text:'Technical blog posts on Medium/Dev.to differentiate freshers significantly',points:5});
+cats.push({name:'Publications & Blog',score:pubS,max:5,suggestions:pubSg});allSugg=allSugg.concat(pubSg);total+=pubS;
+total=Math.min(Math.max(Math.round(total),0),100);var gi=ATSEngine.getGrade(total);
+return{score:total,grade:gi.grade,gradeColor:gi.color,categories:cats,suggestions:allSugg.filter(function(s){return s.type!=='good';}).slice(0,9),goodItems:allSugg.filter(function(s){return s.type==='good';}),expertTips:[{type:'info',text:'💡 Write a targeted 40-60 word professional summary with role keywords'},{type:'info',text:'💡 Add measurable impact to every project: "500+ daily API requests"'},{type:'info',text:'💡 Tailor skills section to match job description keywords exactly'},{type:'info',text:'💡 Add all certifications with Credly verification links'}]};}
+return{analyze:analyze};})();
+
+/* ════════════════════════════════════════
+   PROFESSIONAL ATS EXPERT SYSTEM
+   ════════════════════════════════════════ */
+var ProfessionalATS=(function(){function analyze(d){var cats=[],allSugg=[],total=0;
+var cr=ATSEngine.checkContactInfo(d),pr=ATSEngine.checkOnlinePresence(d);
+var cs=Math.min(Math.round(cr.score*0.35+pr.score*0.65),10);
+cats.push({name:'Contact & Online Presence',score:cs,max:10,suggestions:cr.suggestions.concat(pr.suggestions)});allSugg=allSugg.concat(cr.suggestions,pr.suggestions);total+=cs;
+var sum=d.summary||'',sw=sum.split(/\s+/).filter(Boolean).length,ss=0,ssg=[];
+if(sw>=40&&sw<=80)ss=10;else if(sw>=20){ss=6;ssg.push({type:'warning',text:'Professional summary should be 40-80 words targeting the specific role',points:4});}
+else if(sw>0){ss=3;ssg.push({type:'critical',text:'Expand: include years of experience, core specialization, value proposition',points:7});}
+else ssg.push({type:'critical',text:'Missing professional summary — ATS ranks this heavily for experienced hires',points:10});
+cats.push({name:'Professional Summary',score:ss,max:10,suggestions:ssg});allSugg=allSugg.concat(ssg);total+=ss;
+var exp=d.experience||[],es=0,esg=[],em=20;
+if(exp.length>=4)es+=8;else if(exp.length>=3)es+=6;else if(exp.length>=2)es+=4;else if(exp.length>=1)es+=2;else esg.push({type:'critical',text:'Work experience section is empty — critical for professional profiles',points:8});
+var allExpT=exp.map(function(e){return e.responsibilities||'';}).join('\n');
+var mr=ATSEngine.checkQuantifiedAchievements([allExpT]);
+if(mr.count>=5)es+=5;else if(mr.count>=2)es+=2;else esg.push({type:'critical',text:'Quantify EVERY achievement: [Verb]+[Metric]+[Business Impact]',points:5});
+if(exp.length>0&&es<em)es+=Math.min(em-es,7);
+cats.push({name:'Work Experience',score:Math.min(es,em),max:em,suggestions:esg});allSugg=allSugg.concat(esg);total+=Math.min(es,em);
+var qa=ATSEngine.checkQuantifiedAchievements(exp.map(function(e){return e.responsibilities||'';}));
+cats.push({name:'Quantified Achievements',score:Math.min(qa.score,15),max:15,suggestions:qa.suggestions});allSugg=allSugg.concat(qa.suggestions);total+=Math.min(qa.score,15);
+var sr=ATSEngine.checkSkillsSection(d),sklS=Math.min(Math.round(sr.score*1.5),15);
+cats.push({name:'Skills Alignment',score:sklS,max:15,suggestions:sr.suggestions});allSugg=allSugg.concat(sr.suggestions);total+=sklS;
+var certs=d.certifications||[],certS=0,certSg=[];
+if(certs.length>=3)certS=8;else if(certs.length>=2)certS=6;else if(certs.length>=1)certS=3;else certSg.push({type:'warning',text:'Senior roles benefit: AWS SA, GCP Pro, CKA, PMP or domain-specific certs',points:8});
+cats.push({name:'Certifications',score:certS,max:8,suggestions:certSg});allSugg=allSugg.concat(certSg);total+=certS;
+var pubs=d.publications||[],proj=d.projects||[],cntS=0,cntSg=[];
+if(pubs.length>=2)cntS+=4;else if(pubs.length===1)cntS+=2;else cntSg.push({type:'info',text:'Technical articles, conference talks, or blog posts signal thought leadership',points:4});
+if(proj.length>=1)cntS+=3;else cntSg.push({type:'info',text:'Side projects or open-source contributions boost technical credibility',points:3});
+cats.push({name:'Publications & Projects',score:Math.min(cntS,7),max:7,suggestions:cntSg});allSugg=allSugg.concat(cntSg);total+=Math.min(cntS,7);
+var vr=ATSEngine.checkActionVerbs(exp.map(function(e){return e.responsibilities||'';}));
+cats.push({name:'Keywords & Action Verbs',score:Math.min(vr.score,10),max:10,suggestions:vr.suggestions});allSugg=allSugg.concat(vr.suggestions);total+=Math.min(vr.score,10);
+var edu=(d.education||[])[0]||{},eduS=0,eduSg=[];
+if(edu.degree)eduS+=3;else eduSg.push({type:'warning',text:'Include degree type and field of study',points:3});
+if(edu.school||edu.university)eduS+=2;else eduSg.push({type:'info',text:'Add university name',points:2});
+cats.push({name:'Education',score:Math.min(eduS,5),max:5,suggestions:eduSg});allSugg=allSugg.concat(eduSg);total+=Math.min(eduS,5);
+total=Math.min(Math.max(Math.round(total),0),100);var gi=ATSEngine.getGrade(total);
+return{score:total,grade:gi.grade,gradeColor:gi.color,categories:cats,suggestions:allSugg.filter(function(s){return s.type!=='good';}).slice(0,10),goodItems:allSugg.filter(function(s){return s.type==='good';}),expertTips:[{type:'info',text:'💡 Every bullet: CAR method — Challenge → Action → Result with specific metrics'},{type:'info',text:'💡 Match your summary EXACTLY to job description keywords'},{type:'info',text:'💡 Show career progression — titles should demonstrate growth'},{type:'info',text:'💡 Add Credly links to all certifications for ATS validation'}]};}
+return{analyze:analyze};})();
+
+/* ════════════════════════════════════════
+   EXECUTIVE ATS EXPERT SYSTEM
+   ════════════════════════════════════════ */
+var ExecutiveATS=(function(){var EK=['p&l','revenue','ebitda','strategic','transformation','board','c-suite','ceo','cto','cfo','coo','vp','director','executive','growth','scale','acquisition','merger','fundraising','organizational design','change management','digital transformation','enterprise','global','cross-functional','governance','stakeholders','capital allocation','operating model','turnaround','expansion','talent development','innovation','competitive advantage'];function analyze(d){var cats=[],allSugg=[],total=0;
+var cr=ATSEngine.checkContactInfo(d),pr=ATSEngine.checkOnlinePresence(d);
+var cs=Math.min(Math.round(cr.score*0.3+pr.score*0.5),8);
+cats.push({name:'Contact & Executive Presence',score:cs,max:8,suggestions:cr.suggestions.concat(pr.suggestions)});allSugg=allSugg.concat(cr.suggestions,pr.suggestions);total+=cs;
+var sum=d.summary||'',sw=sum.split(/\s+/).filter(Boolean).length,ss=0,ssg=[];
+var ekm=EK.filter(function(k){return sum.toLowerCase().indexOf(k)!==-1;}).length;
+if(sw>=50&&sw<=120){ss=ekm>=4?10:ekm>=2?8:7;if(ekm<3)ssg.push({type:'warning',text:'Embed 5+ executive keywords (P&L, revenue, transformation) in summary',points:4});}
+else if(sw>=25){ss=5;ssg.push({type:'warning',text:'Expand executive summary to 50-120 words with career scope and unique value',points:5});}
+else if(sw>0){ss=2;ssg.push({type:'critical',text:'Summary too brief. Include: career scope, P&L scale, leadership breadth, strategic focus',points:10});}
+else ssg.push({type:'critical',text:'Executive summary missing — critical for C-Suite ATS and executive search',points:12});
+if(sum&&!/\$|\d+[KMB]|\d+%/.test(sum)&&ss>0)ssg.push({type:'critical',text:'Put a financial metric in your summary: "$500M P&L" or "2x revenue growth"',points:3});
+cats.push({name:'Executive Summary',score:Math.min(ss,12),max:12,suggestions:ssg});allSugg=allSugg.concat(ssg);total+=Math.min(ss,12);
+var comp=d.competencies||d.coreCompetencies||'',compA=typeof comp==='string'?comp.split(',').map(function(c){return c.trim();}).filter(Boolean):comp,compS=0,compSg=[];
+if(compA.length>=12)compS=10;else if(compA.length>=8)compS=7;else if(compA.length>=4)compS=4;else if(compA.length>=1)compS=2;else compSg.push({type:'critical',text:'Core Competencies section is essential — 12-18 keyword phrases mirroring JD language',points:10});
+cats.push({name:'Core Competencies',score:compS,max:10,suggestions:compSg});allSugg=allSugg.concat(compSg);total+=compS;
+var exp=d.experience||[],es=0,esg=[],em=20;
+if(exp.length>=4)es+=5;else if(exp.length>=2)es+=3;else if(exp.length>=1)es+=1;else esg.push({type:'critical',text:'Work experience is empty — primary section for executive resumes',points:5});
+var allExpT=exp.map(function(e){return e.responsibilities||'';}).join('\n');
+if(/p&l|\$\d|revenue|profit|ebitda|budget|million|billion/i.test(allExpT))es+=6;else esg.push({type:'critical',text:'Include P&L ownership in EVERY senior role: "$X million P&L"',points:6});
+if(/team of \d+|\d+ (engineers|employees|people|staff)/i.test(allExpT))es+=4;else esg.push({type:'critical',text:'State team size: "Led 150-person organization"',points:4});
+var mr=ATSEngine.checkQuantifiedAchievements([allExpT]);
+if(mr.count>=8)es+=5;else if(mr.count>=4)es+=3;else esg.push({type:'critical',text:'Every bullet needs a metric. Executives must prove ROI: %, $, x growth, # FTEs',points:5});
+cats.push({name:'Executive Experience',score:Math.min(es,em),max:em,suggestions:esg});allSugg=allSugg.concat(esg);total+=Math.min(es,em);
+var ft=JSON.stringify(d),ldS=0,ldSg=[],ldM=15;
+if(/million|billion|\$[0-9]/i.test(ft))ldS+=5;else ldSg.push({type:'critical',text:'Financial scale ($M, $B) must appear in experience bullets',points:5});
+if(/\d+%|\d+x growth|YoY|year-over-year/i.test(ft))ldS+=5;else ldSg.push({type:'warning',text:'Show growth metrics: YoY%, revenue growth rates, market expansion',points:5});
+if(/team|organization|headcount|FTE|employees|\d+ people/i.test(ft))ldS+=5;else ldSg.push({type:'warning',text:'Include organizational scope in all senior roles',points:5});
+cats.push({name:'Leadership & Scale Metrics',score:Math.min(ldS,ldM),max:ldM,suggestions:ldSg});allSugg=allSugg.concat(ldSg);total+=Math.min(ldS,ldM);
+var board=d.boardRoles||'',boardA=typeof board==='string'?board.split('\n').filter(Boolean):board,boardS=boardA.length>=2?10:boardA.length===1?6:0,boardSg=[];
+if(boardS===0)boardSg.push({type:'info',text:'Board/advisory roles: even non-profit or startup boards signal executive gravitas',points:10});
+cats.push({name:'Board & Advisory Roles',score:boardS,max:10,suggestions:boardSg});allSugg=allSugg.concat(boardSg);total+=boardS;
+var pubs=d.publications||[],pubS=pubs.length>=3?8:pubs.length>=2?5:pubs.length>=1?3:0,pubSg=[];
+if(pubS===0)pubSg.push({type:'info',text:'Executives need: keynote talks, Forbes/HBR articles, podcast appearances, patents',points:8});
+cats.push({name:'Publications & Speaking',score:pubS,max:8,suggestions:pubSg});allSugg=allSugg.concat(pubSg);total+=pubS;
+var edu=d.education||[],eduS=edu.length>=2?7:edu.length===1?(/mba|master|executive|phd/i.test((edu[0].degree||''))?5:2):0,eduSg=[];
+if(edu.length===0)eduSg.push({type:'warning',text:'Education section required — executive ATS checks credentials',points:7});
+cats.push({name:'Education & Executive Programs',score:Math.min(eduS,7),max:7,suggestions:eduSg});allSugg=allSugg.concat(eduSg);total+=Math.min(eduS,7);
+var ftL=ft.toLowerCase(),mek=EK.filter(function(k){return ftL.indexOf(k)!==-1;});
+var kr=mek.length/EK.length,kwS=kr>=0.5?10:kr>=0.35?7:kr>=0.2?4:1,kwSg=[];
+if(kr<0.4){var mis=EK.filter(function(k){return ftL.indexOf(k)===-1;}).slice(0,5);kwSg.push({type:'warning',text:'Add executive keywords: '+mis.join(', '),points:10-kwS});}
+cats.push({name:'Executive Keyword Density',score:kwS,max:10,suggestions:kwSg});allSugg=allSugg.concat(kwSg);total+=kwS;
+total=Math.min(Math.max(Math.round(total),0),100);var gi=ATSEngine.getGrade(total);
+return{score:total,grade:gi.grade,gradeColor:gi.color,categories:cats,suggestions:allSugg.filter(function(s){return s.type!=='good';}).slice(0,10),goodItems:allSugg.filter(function(s){return s.type==='good';}),expertTips:[{type:'info',text:'💡 Lead every role bullet with dollar/revenue impact: "$50M ARR", "2x revenue growth"'},{type:'info',text:'💡 Show team scale: "Led 200-person engineering organization across 4 countries"'},{type:'info',text:'💡 Core Competencies section must use exact C-Suite JD language'},{type:'info',text:'💡 LinkedIn must mirror resume exactly — ATS cross-references both for executive roles'}]};}
+return{analyze:analyze};})();
+</script>
+<script>
+/* ════════════════════════════════════════
+   RESUME BUILDER + PDF EXPORT + APP CONTROLLER
+   ════════════════════════════════════════ */
+var ResumeBuilder=(function(){
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function lnk(url,label){if(!url||url.length<5)return'';var h=url.startsWith('http')?url:'https://'+url;return'<a href="'+esc(h)+'" class="entry-link" target="_blank">'+esc(label||url)+'</a>';}
+function bullets(t){if(!t)return'';var lines=t.split('\n').map(function(l){return l.replace(/^[-•*]\s*/,'').trim();}).filter(Boolean);if(!lines.length)return'';return'<ul class="entry-bullets">'+lines.map(function(l){return'<li>'+esc(l)+'</li>';}).join('')+'</ul>';}
+function contact(d){var p=[];if(d.email)p.push('<a class="resume-contact-item" href="mailto:'+esc(d.email)+'">'+esc(d.email)+'</a>');if(d.phone)p.push('<span class="resume-contact-item">'+esc(d.phone)+'</span>');if(d.location||d.city)p.push('<span class="resume-contact-item">'+esc(d.location||d.city)+'</span>');if(d.linkedin)p.push('<a class="resume-contact-item" href="'+(d.linkedin.startsWith('http')?d.linkedin:'https://linkedin.com/in/'+d.linkedin)+'" target="_blank">LinkedIn</a>');if(d.github)p.push('<a class="resume-contact-item" href="'+(d.github.startsWith('http')?d.github:'https://github.com/'+d.github)+'" target="_blank">GitHub</a>');if(d.portfolio)p.push('<a class="resume-contact-item" href="'+(d.portfolio.startsWith('http')?d.portfolio:'https://'+d.portfolio)+'" target="_blank">Portfolio</a>');if(d.blog)p.push('<a class="resume-contact-item" href="'+(d.blog.startsWith('http')?d.blog:'https://'+d.blog)+'" target="_blank">Blog</a>');if(d.twitter)p.push('<a class="resume-contact-item" href="https://twitter.com/'+esc(d.twitter.replace('@',''))+'" target="_blank">Twitter</a>');return p.join('<span class="contact-sep"></span>');}
+function skills(d){var s=d.skills;if(!s)return'<p class="skills-plain">Not specified</p>';if(typeof s==='string')return'<p class="skills-plain">'+esc(s)+'</p>';var h='<div class="skills-plain">';Object.keys(s).forEach(function(k){var v=s[k];if(!v)return;var sv=Array.isArray(v)?v.join(', '):v;if(sv.trim())h+='<strong>'+esc(k)+':</strong> '+esc(sv)+'<br>';});return h+'</div>';}
+function certs(c){if(!c||!c.length)return'';return c.map(function(x){var lk=x.url?'&nbsp;<a class="cert-link" href="'+(x.url.startsWith('http')?x.url:'https://'+x.url)+'" target="_blank">[Verify ↗]</a>':'';return'<div class="cert-entry"><span><span class="cert-name">'+esc(x.name)+'</span> — <span class="cert-issuer">'+esc(x.issuer||'')+'</span>'+lk+'</span><span class="cert-right"><span class="cert-issuer">'+esc(x.date||x.year||'')+'</span></span></div>';}).join('');}
+function pubs(p){if(!p||!p.length)return'';return p.map(function(x){var lk=x.url?'<a class="pub-link" href="'+(x.url.startsWith('http')?x.url:'https://'+x.url)+'" target="_blank">[Read ↗]</a>':'';return'<div class="pub-entry"><div><span class="pub-title">'+esc(x.title)+'</span> '+lk+'</div><div class="pub-venue">'+esc(x.venue||x.platform||'')+(x.date?' &bull; '+esc(x.date):'')+'</div></div>';}).join('');}
+function projects(pp){if(!pp||!pp.length)return'';return pp.map(function(p){var gh=p.github?'<a class="project-link" href="'+(p.github.startsWith('http')?p.github:'https://github.com/'+p.github)+'" target="_blank">GitHub ↗</a>':'';var dm=p.demo?'<a class="project-link" href="'+(p.demo.startsWith('http')?p.demo:'https://'+p.demo)+'" target="_blank">Demo ↗</a>':'';var bl=p.blog?'<a class="project-link" href="'+(p.blog.startsWith('http')?p.blog:'https://'+p.blog)+'" target="_blank">Article ↗</a>':'';var lks=[gh,dm,bl].filter(Boolean).join(' ');return'<div class="project-entry"><div class="project-header"><span class="project-name">'+esc(p.name)+(p.tech?' <span class="project-tech">('+esc(p.tech)+')</span>':'')+'</span><div class="project-links">'+lks+'</div></div><div class="project-desc">'+esc(p.description||'')+'</div></div>';}).join('');}
+function expEntry(e,t){var extra=t==='executive'?'<div class="executive-highlight">'+bullets(e.responsibilities)+'</div>':'';var teampl=t==='executive'&&(e.teamSize||e.plScope)?'<div class="edu-details">'+(e.teamSize?'Team: '+esc(e.teamSize):'')+(e.plScope?' &bull; P&L: '+esc(e.plScope):'')+'</div>':'';return'<div class="resume-entry"><div class="entry-header"><div class="entry-title-block"><div class="entry-role">'+esc(e.role)+'</div><div class="entry-company">'+esc(e.company)+'</div>'+(e.companyDesc?'<div class="pub-venue">'+esc(e.companyDesc)+'</div>':'')+teampl+'</div><div class="entry-meta"><div>'+esc(e.startDate||'')+(e.endDate?' – '+esc(e.endDate):'')+'</div><div class="entry-location">'+esc(e.location||'')+'</div></div></div>'+(t==='executive'?extra:bullets(e.responsibilities))+(e.projectUrl?'<a class="entry-link" href="'+esc(e.projectUrl)+'" target="_blank">Project ↗</a>':'')+'</div>';}
+function buildInternship(d){var edu=(d.education||[])[0]||{};return'<div class="resume-doc internship"><div class="resume-header"><div class="resume-name">'+esc(d.name||'Your Name')+'</div><div class="resume-title">Seeking Internship'+(d.targetRole?' — '+esc(d.targetRole):'')+'</div><div class="resume-contact">'+contact(d)+'</div></div><div class="resume-section"><div class="resume-section-title">Education</div><div class="edu-entry"><div class="entry-header"><div class="entry-title-block"><div class="edu-degree">'+esc(edu.degree||'')+' in '+esc(edu.major||'')+'</div><div class="edu-school">'+esc(edu.university||edu.school||'')+'</div>'+(edu.coursework?'<div class="edu-coursework"><strong>Relevant Coursework:</strong> '+esc(edu.coursework)+'</div>':'')+'</div><div class="entry-meta"><div>'+esc(edu.gradYear||'')+'</div>'+(edu.gpa?'<div>GPA: '+esc(edu.gpa)+'</div>':'')+'</div></div></div></div>'+(d.skills?'<div class="resume-section"><div class="resume-section-title">Technical Skills</div>'+skills(d)+'</div>':'')+((d.projects||[]).length?'<div class="resume-section"><div class="resume-section-title">Projects</div>'+projects(d.projects)+'</div>':'')+(( d.experience||[]).length?'<div class="resume-section"><div class="resume-section-title">Experience</div>'+(d.experience||[]).map(function(e){return expEntry(e,'internship');}).join('')+'</div>':'')+((d.certifications||[]).length?'<div class="resume-section"><div class="resume-section-title">Certifications</div>'+certs(d.certifications)+'</div>':'')+(d.extracurriculars?'<div class="resume-section"><div class="resume-section-title">Extracurricular Activities</div><p class="resume-summary">'+esc(d.extracurriculars)+'</p></div>':'')+(d.awards?'<div class="resume-section"><div class="resume-section-title">Awards</div><p class="resume-summary">'+esc(d.awards)+'</p></div>':'')+'<div class="resume-footer"><span>'+esc(d.name||'')+'</span><span>Internship Resume</span></div></div>';}
+function buildFresher(d){var edu=(d.education||[])[0]||{};return'<div class="resume-doc fresher"><div class="resume-header"><div class="resume-name">'+esc(d.name||'Your Name')+'</div><div class="resume-title">'+esc(d.targetRole||'Software Engineer')+(d.targetIndustry?' | '+esc(d.targetIndustry):'')+'</div><div class="resume-contact">'+contact(d)+'</div></div>'+(d.summary?'<div class="resume-section"><div class="resume-section-title">Professional Summary</div><p class="resume-summary">'+esc(d.summary)+'</p></div>':'')+(d.skills?'<div class="resume-section"><div class="resume-section-title">Technical Skills</div>'+skills(d)+'</div>':'')+'<div class="resume-section"><div class="resume-section-title">Education</div><div class="edu-entry"><div class="edu-degree">'+esc(edu.degree||'')+' in '+esc(edu.major||'')+'</div><div class="edu-school">'+esc(edu.university||edu.school||'')+'</div>'+(edu.coursework?'<div class="edu-coursework"><strong>Relevant Coursework:</strong> '+esc(edu.coursework)+'</div>':'')+(edu.gpa?'<div class="edu-details">GPA: '+esc(edu.gpa)+'</div>':'')+'<div class="edu-details">'+esc(edu.gradYear||'')+'</div></div></div>'+((d.projects||[]).length?'<div class="resume-section"><div class="resume-section-title">Projects & Portfolio</div>'+projects(d.projects)+'</div>':'')+((d.experience||[]).length?'<div class="resume-section"><div class="resume-section-title">Internship Experience</div>'+(d.experience||[]).map(function(e){return expEntry(e,'fresher');}).join('')+'</div>':'')+((d.certifications||[]).length?'<div class="resume-section"><div class="resume-section-title">Certifications</div>'+certs(d.certifications)+'</div>':'')+((d.publications||[]).length?'<div class="resume-section"><div class="resume-section-title">Publications & Blog Posts</div>'+pubs(d.publications)+'</div>':'')+(d.awards?'<div class="resume-section"><div class="resume-section-title">Awards</div><p class="resume-summary">'+esc(d.awards)+'</p></div>':'')+'<div class="resume-footer"><span>'+esc(d.name||'')+'</span><span>Fresher Resume</span></div></div>';}
+function buildProfessional(d){var edu=(d.education||[])[0]||{};return'<div class="resume-doc professional"><div class="resume-header"><div class="resume-name">'+esc(d.name||'Your Name')+'</div><div class="resume-title">'+esc(d.currentTitle||d.targetRole||'Senior Engineer')+'</div><div class="resume-contact">'+contact(d)+'</div></div>'+(d.summary?'<div class="resume-section"><div class="resume-section-title">Professional Summary</div><p class="resume-summary">'+esc(d.summary)+'</p></div>':'')+((d.experience||[]).length?'<div class="resume-section"><div class="resume-section-title">Professional Experience</div>'+(d.experience||[]).map(function(e){return expEntry(e,'professional');}).join('')+'</div>':'')+(d.skills?'<div class="resume-section"><div class="resume-section-title">Core Skills & Technologies</div>'+skills(d)+'</div>':'')+((d.projects||[]).length?'<div class="resume-section"><div class="resume-section-title">Key Projects & Open Source</div>'+projects(d.projects)+'</div>':'')+((d.certifications||[]).length?'<div class="resume-section"><div class="resume-section-title">Certifications</div>'+certs(d.certifications)+'</div>':'')+((d.publications||[]).length?'<div class="resume-section"><div class="resume-section-title">Publications, Talks & Blog Posts</div>'+pubs(d.publications)+'</div>':'')+'<div class="resume-section"><div class="resume-section-title">Education</div><div class="edu-entry"><div class="edu-degree">'+esc(edu.degree||'')+'</div><div class="edu-school">'+esc(edu.university||edu.school||'')+'</div><div class="edu-details">'+esc(edu.gradYear||'')+'</div></div></div>'+(d.awards?'<div class="resume-section"><div class="resume-section-title">Awards</div><p class="resume-summary">'+esc(d.awards)+'</p></div>':'')+'<div class="resume-footer"><span>'+esc(d.name||'')+'</span><span>Professional Resume</span></div></div>';}
+function buildExecutive(d){var comps=typeof(d.competencies||'')!=='string'?d.competencies:(d.competencies||'').split(',').map(function(c){return c.trim();}).filter(Boolean);var boardRoles=typeof(d.boardRoles||'')!=='string'?d.boardRoles:(d.boardRoles||'').split('\n').filter(Boolean);var edu1=(d.education||[])[0]||{},edu2=(d.education||[])[1]||{};return'<div class="resume-doc executive"><div class="resume-header"><div class="resume-name">'+esc(d.name||'Your Name')+'</div><div class="resume-title">'+esc(d.currentTitle||d.executiveTitle||'Chief Executive Officer')+'</div><div class="resume-contact">'+contact(d)+'</div></div>'+(d.summary?'<div class="resume-section"><div class="resume-section-title">Executive Summary</div><p class="resume-summary">'+esc(d.summary)+'</p></div>':'')+(comps.length?'<div class="resume-section"><div class="resume-section-title">Core Competencies</div><div class="competencies-grid">'+comps.map(function(c){return'<div class="competency-item">'+esc(c)+'</div>';}).join('')+'</div></div>':'')+((d.experience||[]).length?'<div class="resume-section"><div class="resume-section-title">Executive Experience</div>'+(d.experience||[]).map(function(e){return expEntry(e,'executive');}).join('')+'</div>':'')+(boardRoles.length?'<div class="resume-section"><div class="resume-section-title">Board & Advisory Roles</div>'+boardRoles.map(function(b){return'<div class="board-entry"><div class="board-role">'+esc(b)+'</div></div>';}).join('')+'</div>':'')+(d.skills?'<div class="resume-section"><div class="resume-section-title">Leadership & Technical Skills</div>'+skills(d)+'</div>':'')+((d.publications||[]).length?'<div class="resume-section"><div class="resume-section-title">Publications, Speaking & Media</div>'+pubs(d.publications)+'</div>':'')+(edu1.degree||edu1.university?'<div class="resume-section"><div class="resume-section-title">Education</div><div class="edu-entry"><div class="edu-degree">'+esc(edu1.degree||'')+'</div><div class="edu-school">'+esc(edu1.university||edu1.school||'')+'</div><div class="edu-details">'+esc(edu1.year||'')+'</div></div>'+(edu2.degree?'<div class="edu-entry"><div class="edu-degree">'+esc(edu2.degree)+'</div><div class="edu-school">'+esc(edu2.university||edu2.school||'')+'</div><div class="edu-details">'+esc(edu2.year||'')+'</div></div>':'')+'</div>':'')+((d.certifications||[]).length?'<div class="resume-section"><div class="resume-section-title">Certifications & Affiliations</div>'+certs(d.certifications)+'</div>':'')+(d.awards?'<div class="resume-section"><div class="resume-section-title">Awards & Recognition</div><p class="resume-summary">'+esc(d.awards)+'</p></div>':'')+'<div class="resume-footer"><span>'+esc(d.name||'')+'</span><span>'+esc(d.currentTitle||'Executive')+' Resume</span></div></div>';}
+function build(type,data){switch(type){case'internship':return buildInternship(data);case'fresher':return buildFresher(data);case'professional':return buildProfessional(data);case'executive':return buildExecutive(data);default:return'';}}
+return{build:build};})();
+
+/* ════ PDF EXPORT ════ */
+var PDFExport=(function(){
+var PS='@import url(\'https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap\');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:\'Open Sans\',Arial,sans-serif;background:#fff;color:#1a1a2e;font-size:12px;line-height:1.5}.resume-doc{background:#fff;color:#1a1a2e;font-family:\'Open Sans\',Arial,sans-serif;font-size:12px;line-height:1.5;padding:24px 28px;max-width:820px;margin:0 auto}.resume-header{margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid #1a1a2e}.resume-name{font-size:20px;font-weight:800;color:#0a0a1a;letter-spacing:-.5px;margin-bottom:2px}.resume-title{font-size:12px;font-weight:600;color:#2a5298;margin-bottom:6px;text-transform:uppercase}.resume-contact{display:flex;flex-wrap:wrap;gap:3px 10px}.resume-contact-item,a{font-size:12px;color:#2a5298;text-decoration:none}.contact-sep{width:3px;height:3px;border-radius:50%;background:#9999bb;display:inline-block}.resume-section{margin-bottom:12px}.resume-section-title{font-size:12px;font-weight:800;color:#0a0a1a;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1.5px solid #0a0a1a;padding-bottom:3px;margin-bottom:7px}.internship .resume-section-title{color:#01579b;border-bottom-color:#0277bd}.fresher .resume-section-title{color:#4a148c;border-bottom-color:#6a1b9a}.professional .resume-section-title{color:#1b5e20;border-bottom-color:#2e7d32}.executive .resume-section-title{color:#1a237e;border-bottom-color:#1a237e}.resume-summary{font-size:12px;color:#2a2a4a;line-height:1.6}.resume-entry{margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid #f0f0f8}.resume-entry:last-child{border-bottom:none}.entry-header{display:flex;justify-content:space-between;gap:8px;margin-bottom:1px}.entry-title-block{flex:1}.entry-role{font-size:12px;font-weight:700;color:#0a0a1a}.entry-company{font-size:12px;font-weight:600;color:#2a5298}.entry-meta{font-size:12px;color:#6a6a8a;text-align:right;white-space:nowrap}.entry-bullets{list-style:none;padding:0;margin:4px 0 0 0}.entry-bullets li{font-size:12px;color:#2a2a4a;padding-left:12px;position:relative;margin-bottom:2px;line-height:1.5}.entry-bullets li::before{content:"▸";position:absolute;left:0;color:#2a5298;font-size:12px}.entry-link,.project-link,.cert-link,.pub-link{font-size:12px;color:#2a5298;text-decoration:none;display:inline-block;margin-top:2px}.edu-entry{margin-bottom:7px}.edu-degree{font-size:12px;font-weight:700;color:#0a0a1a}.edu-school{font-size:12px;font-weight:600;color:#2a5298}.edu-details,.edu-coursework{font-size:12px;color:#6a6a8a}.skills-plain{font-size:12px;color:#2a2a4a;line-height:1.7}.skills-plain strong{color:#0a0a1a;font-weight:700}.project-entry{margin-bottom:7px}.project-header{display:flex;justify-content:space-between;gap:8px}.project-name{font-size:12px;font-weight:700;color:#0a0a1a}.project-tech{font-size:12px;color:#6a6a8a;font-style:italic}.project-links{display:flex;gap:8px}.project-desc{font-size:12px;color:#2a2a4a;margin-top:2px;line-height:1.5}.cert-entry{display:flex;justify-content:space-between;margin-bottom:4px;gap:8px}.cert-name{font-size:12px;font-weight:600;color:#0a0a1a}.cert-issuer{font-size:12px;color:#6a6a8a}.cert-right{display:flex;gap:8px}.pub-entry{margin-bottom:5px}.pub-title{font-size:12px;font-weight:600;color:#0a0a1a}.pub-venue{font-size:12px;color:#6a6a8a}.competencies-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.competency-item{font-size:12px;color:#2a2a4a;display:flex;align-items:center;gap:4px}.competency-item::before{content:"✦";color:#2a5298;font-size:12px}.board-entry{margin-bottom:5px}.board-role{font-size:12px;font-weight:600;color:#0a0a1a}.executive-highlight{background:#f8f9ff;border-left:2px solid #1a237e;padding:5px 10px;margin:4px 0;border-radius:0 3px 3px 0}.resume-footer{margin-top:12px;padding-top:6px;border-top:1px solid #e0e0f0;font-size:12px;color:#aaaacc;display:flex;justify-content:space-between}@page{size:A4;margin:10mm}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+function exportPDF(html,type,name){var w=window.open('','_blank','width=900,height=700,scrollbars=yes');if(!w){alert('Please allow popups for PDF export.');return;}var t=(name||'Resume')+' — ATS Optimized';w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+t+'</title><style>'+PS+'</style></head><body><div style="max-width:820px;margin:0 auto;padding:20px 24px;">'+html+'</div><script>window.addEventListener("load",function(){setTimeout(function(){window.print();},800);});<\/script></body></html>');w.document.close();}
+return{exportPDF:exportPDF};})();
+
+/* ════ APP STATE & CONTROLLER ════ */
+var AppState={activeType:'internship',activePreviewTab:'preview',formData:{},currentResumeHTML:'',debounce:{}};
+
+function switchTab(type){AppState.activeType=type;document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.type===type);});document.querySelectorAll('.resume-form-page').forEach(function(p){p.style.display=p.id==='form-'+type?'block':'none';});AppState.currentResumeHTML='';updatePreview('');renderATS(null);}
+function switchPreviewTab(tab){AppState.activePreviewTab=tab;document.querySelectorAll('.preview-tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tab===tab);});document.getElementById('preview-pane').style.display=tab==='preview'?'block':'none';document.getElementById('ats-pane').style.display=tab==='ats'?'block':'none';}
+function onFormChange(type){clearTimeout(AppState.debounce[type]);AppState.debounce[type]=setTimeout(function(){var d=collectData(type);AppState.formData[type]=d;var wc=document.getElementById(type.substring(0,3)+'-summary-count');if(wc){var w=(document.getElementById(type.substring(0,3)+'-summary')||{value:''}).value.trim().split(/\s+/).filter(Boolean).length;wc.textContent=w+' words — aim for 40-80';wc.style.color=w>=40&&w<=80?'#00e5a0':w>0?'#ffb020':'#8b9bb4';}var h=ResumeBuilder.build(type,d);AppState.currentResumeHTML=h;updatePreview(h);var r=runATS(type,d);renderATS(r);},300);}
+
+function v(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function collectData(type){var d={};var p=type.substring(0,3);
+if(type==='internship'){d={name:v('int-name'),targetRole:v('int-targetRole'),email:v('int-email'),phone:v('int-phone'),location:v('int-location'),linkedin:v('int-linkedin'),github:v('int-github'),portfolio:v('int-portfolio'),education:[{university:v('int-edu-university'),degree:v('int-edu-degree'),major:v('int-edu-major'),gradYear:v('int-edu-gradYear'),gpa:v('int-edu-gpa'),coursework:v('int-edu-coursework')}],skills:{Languages:v('int-skills-languages'),Frameworks:v('int-skills-frameworks'),Tools:v('int-skills-tools'),Databases:v('int-skills-databases')},extracurriculars:v('int-extracurriculars'),awards:v('int-awards')};}
+else if(type==='fresher'){d={name:v('fre-name'),targetRole:v('fre-targetRole'),targetIndustry:v('fre-targetIndustry'),email:v('fre-email'),phone:v('fre-phone'),location:v('fre-location'),linkedin:v('fre-linkedin'),github:v('fre-github'),portfolio:v('fre-portfolio'),blog:v('fre-blog'),summary:v('fre-summary'),education:[{university:v('fre-edu-university'),degree:v('fre-edu-degree'),major:v('fre-edu-major'),gradYear:v('fre-edu-gradYear'),gpa:v('fre-edu-gpa'),coursework:v('fre-edu-coursework')}],skills:{Languages:v('fre-skills-languages'),Frameworks:v('fre-skills-frameworks'),Cloud:v('fre-skills-cloud'),Tools:v('fre-skills-tools'),Soft:v('fre-skills-soft')},awards:v('fre-awards')};}
+else if(type==='professional'){d={name:v('pro-name'),currentTitle:v('pro-currentTitle'),targetRole:v('pro-targetRole'),email:v('pro-email'),phone:v('pro-phone'),location:v('pro-location'),linkedin:v('pro-linkedin'),github:v('pro-github'),portfolio:v('pro-portfolio'),blog:v('pro-blog'),twitter:v('pro-twitter'),summary:v('pro-summary'),education:[{degree:v('pro-edu-degree'),university:v('pro-edu-university'),gradYear:v('pro-edu-gradYear')}],skills:{Languages:v('pro-skills-languages'),Frameworks:v('pro-skills-frameworks'),Cloud:v('pro-skills-cloud'),Data:v('pro-skills-data'),Practices:v('pro-skills-practices')},awards:v('pro-awards')};}
+else if(type==='executive'){d={name:v('exe-name'),currentTitle:v('exe-currentTitle'),executiveTitle:v('exe-currentTitle'),email:v('exe-email'),phone:v('exe-phone'),location:v('exe-location'),linkedin:v('exe-linkedin'),blog:v('exe-blog'),twitter:v('exe-twitter'),github:v('exe-github'),companyUrl:v('exe-companyUrl'),summary:v('exe-summary'),competencies:v('exe-competencies'),boardRoles:v('exe-boardRoles'),awards:v('exe-awards'),education:[{degree:v('exe-edu-degree1'),university:v('exe-edu-school1'),year:v('exe-edu-year1')},{degree:v('exe-edu-degree2'),university:v('exe-edu-school2'),year:v('exe-edu-year2')}].filter(function(e){return e.degree||e.university;}),skills:{Leadership:v('exe-skills-leadership'),Technical:v('exe-skills-technical'),Operations:v('exe-skills-ops')}};}
+d.experience=collectEntries(type,'experience');d.projects=collectEntries(type,'project');d.certifications=collectEntries(type,'certification');d.publications=collectEntries(type,'publication');
+return d;}
+
+function collectEntries(type,entryType){var c=document.getElementById(type.substring(0,3)+'-'+entryType+'s-container');if(!c)return[];var entries=[];c.querySelectorAll('.entry-card').forEach(function(card){var e={};card.querySelectorAll('[data-field]').forEach(function(el){e[el.dataset.field]=el.value?el.value.trim():'';});if(Object.values(e).some(function(v){return v&&v.length>0;}))entries.push(e);});return entries;}
+
+var ENTRY_TMPL={
+experience:function(type,id){return'<div class="entry-card" id="entry-'+id+'"><div class="entry-card-header"><span class="entry-card-label">ROLE</span><button class="remove-btn" onclick="removeEntry(\''+id+'\')">✕ Remove</button></div><div class="form-grid"><div class="form-group"><label>Job Title</label><input type="text" data-field="role" placeholder="e.g. Software Engineer" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Company</label><input type="text" data-field="company" placeholder="e.g. Infosys" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Start Date</label><input type="text" data-field="startDate" placeholder="e.g. Jun 2022" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>End Date</label><input type="text" data-field="endDate" placeholder="Present" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Location</label><input type="text" data-field="location" placeholder="e.g. Remote / Chennai" oninput="onFormChange(\''+type+'\')"></div>'+(type==='executive'?'<div class="form-group"><label>Team Size</label><input type="text" data-field="teamSize" placeholder="e.g. 200-person org" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>P&amp;L Scope</label><input type="text" data-field="plScope" placeholder="e.g. $50M budget" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Company Description</label><input type="text" data-field="companyDesc" placeholder="e.g. $2B SaaS company" oninput="onFormChange(\''+type+'\')"></div>':'')+'<div class="form-group full"><label>Responsibilities &amp; Achievements <span class="optional">(one per line, use action verbs + metrics)</span></label><textarea data-field="responsibilities" rows="4" placeholder="• Led migration to microservices, reducing latency by 65%&#10;• Managed CI/CD pipeline for 10M+ daily transactions&#10;• Mentored team of 8 engineers" oninput="onFormChange(\''+type+'\')"></textarea></div>'+(type==='professional'?'<div class="form-group"><label>Project Link</label><input type="url" data-field="projectUrl" placeholder="https://github.com/..." oninput="onFormChange(\''+type+'\')"></div>':'')+'</div></div>';},
+project:function(type,id){return'<div class="entry-card" id="entry-'+id+'"><div class="entry-card-header"><span class="entry-card-label">PROJECT</span><button class="remove-btn" onclick="removeEntry(\''+id+'\')">✕ Remove</button></div><div class="form-grid"><div class="form-group"><label>Project Name <span class="required">*</span></label><input type="text" data-field="name" placeholder="e.g. SmartBudget AI" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Tech Stack</label><input type="text" data-field="tech" placeholder="e.g. Python, React, AWS" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>GitHub URL <span class="optional">(+ATS pts)</span></label><input type="url" data-field="github" placeholder="github.com/user/repo" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Live Demo URL <span class="optional">(+ATS pts)</span></label><input type="url" data-field="demo" placeholder="https://yourapp.vercel.app" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Blog / Article URL</label><input type="url" data-field="blog" placeholder="medium.com/@you/article" oninput="onFormChange(\''+type+'\')"></div><div class="form-group full"><label>Description <span class="optional">(include metrics)</span></label><textarea data-field="description" rows="3" placeholder="Built AI expense categorizer with 94% accuracy. Served 500+ MAU on AWS. Reduced manual work by 80%." oninput="onFormChange(\''+type+'\')"></textarea></div></div></div>';},
+certification:function(type,id){return'<div class="entry-card" id="entry-'+id+'"><div class="entry-card-header"><span class="entry-card-label">CERTIFICATION</span><button class="remove-btn" onclick="removeEntry(\''+id+'\')">✕ Remove</button></div><div class="form-grid"><div class="form-group"><label>Certification Name <span class="required">*</span></label><input type="text" data-field="name" placeholder="e.g. AWS Solutions Architect Associate" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Issuing Body</label><input type="text" data-field="issuer" placeholder="e.g. Amazon Web Services" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Date</label><input type="text" data-field="date" placeholder="e.g. March 2024" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Verification URL <span class="optional">(+ATS pts)</span></label><input type="url" data-field="url" placeholder="credly.com/badges/..." oninput="onFormChange(\''+type+'\')"></div></div></div>';},
+publication:function(type,id){return'<div class="entry-card" id="entry-'+id+'"><div class="entry-card-header"><span class="entry-card-label">PUBLICATION / TALK</span><button class="remove-btn" onclick="removeEntry(\''+id+'\')">✕ Remove</button></div><div class="form-grid"><div class="form-group"><label>Title <span class="required">*</span></label><input type="text" data-field="title" placeholder="e.g. Building Scalable Microservices with Go" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Platform / Venue</label><input type="text" data-field="venue" placeholder="e.g. Medium, Dev.to, IEEE, AWS re:Invent" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>Date</label><input type="text" data-field="date" placeholder="e.g. Jan 2025" oninput="onFormChange(\''+type+'\')"></div><div class="form-group"><label>URL <span class="optional">(+ATS pts)</span></label><input type="url" data-field="url" placeholder="https://medium.com/@you/article" oninput="onFormChange(\''+type+'\')"></div></div></div>';}
+};
+function addEntry(type,entryType){var c=document.getElementById(type.substring(0,3)+'-'+entryType+'s-container');if(!c)return;var id=Date.now()+Math.random();var t=ENTRY_TMPL[entryType];if(!t)return;var div=document.createElement('div');div.innerHTML=t(type,id);c.appendChild(div.firstChild||div);onFormChange(type);}
+function removeEntry(id){var el=document.getElementById('entry-'+id);if(el){el.style.opacity='0';el.style.transition='.2s';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);onFormChange(AppState.activeType);},200);}}
+
+function updatePreview(html){var c=document.getElementById('resume-preview-container');if(!c)return;if(!html||html.length<10){c.innerHTML='<div class="empty-state"><div class="empty-state-icon">📄</div><div class="empty-state-title">Resume Preview</div><div class="empty-state-text">Fill in the form to see your ATS-optimized resume preview here in real-time.</div></div>';return;}c.innerHTML='<div class="resume-preview-wrapper">'+html+'</div>';}
+function runATS(type,data){switch(type){case'internship':return InternshipATS.analyze(data);case'fresher':return FresherATS.analyze(data);case'professional':return ProfessionalATS.analyze(data);case'executive':return ExecutiveATS.analyze(data);}return null;}
+function renderATS(r){var panel=document.getElementById('ats-score-container');if(!panel)return;if(!r){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon">🎯</div><div class="empty-state-title">ATS Score</div><div class="empty-state-text">Start filling in your resume to see your real-time ATS score and expert optimization tips.</div></div>';return;}var sc=r.score||0,col=ATSEngine.getScoreColor(sc),circ=2*Math.PI*44,off=circ-(sc/100)*circ;
+var catH=(r.categories||[]).map(function(c){var bc=c.score/c.max>=0.75?'#00e5a0':c.score/c.max>=0.5?'#ffb020':'#ff4560';var pct=c.max>0?Math.round(c.score/c.max*100):0;return'<div class="breakdown-item"><div class="breakdown-row"><span class="breakdown-name">'+c.name+'</span><span class="breakdown-score" style="color:'+bc+'">'+c.score+'/'+c.max+'</span></div><div class="breakdown-bar"><div class="breakdown-fill" style="width:'+pct+'%;background:'+bc+'"></div></div></div>';}).join('');
+var allS=(r.suggestions||[]).concat(r.expertTips||[]);
+var sH=allS.map(function(s){var cls=s.type==='critical'?'critical':s.type==='good'?'good':s.type==='info'?'info':'';var ic=s.type==='critical'?'🔴':s.type==='good'?'✅':s.type==='warning'?'⚠️':'ℹ️';var pts=s.points?'<span class="suggestion-points">+'+s.points+'pts</span>':'';return'<div class="suggestion-item '+cls+'"><div class="suggestion-header"><span>'+ic+'</span><span class="suggestion-title">'+(s.type==='critical'?'Critical Fix':s.type==='good'?'Great!':s.type==='info'?'Tip':'Improvement')+'</span>'+pts+'</div><div class="suggestion-text">'+s.text+'</div></div>';}).join('');
+var gH=(r.goodItems||[]).slice(0,3).map(function(s){return'<div class="suggestion-item good"><div class="suggestion-header"><span>✅</span><span class="suggestion-title">Strength</span></div><div class="suggestion-text">'+s.text+'</div></div>';}).join('');
+panel.innerHTML='<div><div class="score-hero"><div class="score-circle"><svg viewBox="0 0 100 100" width="110" height="110"><circle class="score-track" cx="50" cy="50" r="44"/><circle class="score-fill" cx="50" cy="50" r="44" stroke="'+col+'" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'"/></svg><div class="score-number" style="color:'+col+'">'+sc+'</div></div><div class="score-label">ATS Score</div><div class="score-grade" style="color:'+col+'">'+r.grade+'</div></div><div class="ats-breakdown"><div class="breakdown-title">Score Breakdown</div>'+catH+'</div>'+(sH?'<div class="breakdown-title" style="margin-top:12px">Optimization Suggestions</div><div class="suggestions-list">'+sH+'</div>':'')+(gH?'<div class="breakdown-title" style="margin-top:12px">Your Strengths</div><div class="suggestions-list">'+gH+'</div>':'')+'</div>';}
+
+function generateResume(type){var d=collectData(type);AppState.formData[type]=d;var h=ResumeBuilder.build(type,d);AppState.currentResumeHTML=h;updatePreview(h);var r=runATS(type,d);renderATS(r);switchPreviewTab('preview');showToast('✅ Resume generated! Check the preview →','success');}
+function downloadPDF(type){var h=AppState.currentResumeHTML;if(!h||h.length<50){var d=collectData(type);h=ResumeBuilder.build(type,d);AppState.currentResumeHTML=h;}if(!h||h.length<20){showToast('⚠️ Fill in resume details first','error');return;}PDFExport.exportPDF(h,type,(AppState.formData[type]||{}).name||'Resume');showToast('📄 Opening PDF export...','info');}
+function clearForm(type){var p=document.getElementById('form-'+type);if(!p)return;p.querySelectorAll('input,textarea,select').forEach(function(el){el.value='';if(el.tagName==='SELECT')el.selectedIndex=0;});['experience','project','certification','publication'].forEach(function(et){var c=document.getElementById(type.substring(0,3)+'-'+et+'s-container');if(c)c.innerHTML='';});AppState.currentResumeHTML='';updatePreview('');renderATS(null);showToast('Form cleared','info');}
+function showToast(msg,type){var ex=document.querySelector('.toast');if(ex)ex.remove();var t=document.createElement('div');t.className='toast '+(type||'info');t.textContent=msg;document.body.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show');});});setTimeout(function(){t.classList.remove('show');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},400);},3200);}
+</script>
+<script>
+/* ════ INJECT FORM HTML INLINE ════ */
+(function(){
+var root=document.getElementById('form-root');
+if(!root)return;
+
+root.innerHTML=
+/* ── INTERNSHIP FORM ── */
+'<div id="form-internship" class="resume-form-page" data-type="internship">'
++'<div class="form-header"><div class="form-type-badge">🎓 Internship</div><h2 class="form-title">Internship Resume Builder</h2><p class="form-subtitle">Build an ATS-optimized resume highlighting academic achievements, projects, and skills to land competitive internships.</p></div>'
++'<div class="step-indicator"><div class="step-dot filled">1</div><div class="step-line"></div><div class="step-dot">2</div><div class="step-line"></div><div class="step-dot">3</div><div class="step-line"></div><div class="step-dot">4</div><div class="step-line"></div><div class="step-dot">5</div><div class="step-line"></div><div class="step-dot">6</div><div class="step-line"></div><div class="step-dot">7</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">👤</div><span>Personal Information</span><div class="section-num">1</div></div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="int-name" placeholder="e.g. Priya Sharma" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>Target Role / Internship</label><input type="text" id="int-targetRole" placeholder="e.g. Software Engineering Intern" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="int-email" placeholder="your@email.com" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>Phone</label><input type="tel" id="int-phone" placeholder="+91 9876543210" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>Location</label><input type="text" id="int-location" placeholder="Chennai, India" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>LinkedIn URL <span class="optional">(+3 ATS pts)</span></label><input type="url" id="int-linkedin" placeholder="linkedin.com/in/yourname" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>GitHub Profile <span class="optional">(+2 ATS pts)</span></label><input type="url" id="int-github" placeholder="github.com/yourusername" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>Portfolio / Website</label><input type="url" id="int-portfolio" placeholder="yourportfolio.dev" oninput="onFormChange(\'internship\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🎓</div><span>Education</span><div class="section-num">2</div></div></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ ATS Tip</div><div class="ats-tip-text">Education is your #1 asset. Include relevant coursework to match JD keywords automatically.</div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>University / College</label><input type="text" id="int-edu-university" placeholder="e.g. IIT Madras" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>Degree</label><select id="int-edu-degree" onchange="onFormChange(\'internship\')"><option value="">Select...</option><option>B.Tech</option><option>B.E.</option><option>BCA</option><option>B.Sc</option><option>B.Com</option><option>MCA</option><option>M.Tech</option><option>MBA</option></select></div>'
++'<div class="form-group"><label>Major / Branch</label><input type="text" id="int-edu-major" placeholder="e.g. Computer Science" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>Expected Graduation</label><input type="text" id="int-edu-gradYear" placeholder="e.g. May 2026" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>CGPA / GPA <span class="optional">(include if ≥7.0)</span></label><input type="number" id="int-edu-gpa" placeholder="e.g. 8.4" min="0" max="10" step="0.1" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group"><label>GPA Scale</label><select id="int-edu-gpaScale" onchange="onFormChange(\'internship\')"><option value="10">Out of 10</option><option value="4">Out of 4.0</option><option value="100">Percentage</option></select></div>'
++'<div class="form-group full"><label>Relevant Coursework <span class="optional">(+5 ATS pts)</span></label><input type="text" id="int-edu-coursework" placeholder="Data Structures, Algorithms, DBMS, OS, Machine Learning, Web Development" oninput="onFormChange(\'internship\')"><div class="field-hint">List 5-8 courses relevant to your target role — these become ATS keyword matches</div></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">⚙️</div><span>Technical Skills</span><div class="section-num">3</div></div></div>'
++'<div class="form-grid">'
++'<div class="form-group full"><label>Programming Languages</label><input type="text" id="int-skills-languages" placeholder="Python, Java, JavaScript, C++, SQL" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group full"><label>Frameworks &amp; Libraries</label><input type="text" id="int-skills-frameworks" placeholder="React, Node.js, Flask, Django, TensorFlow" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group full"><label>Tools &amp; Platforms</label><input type="text" id="int-skills-tools" placeholder="Git, Docker, VS Code, Jupyter, Postman, Firebase, AWS Free Tier" oninput="onFormChange(\'internship\')"></div>'
++'<div class="form-group full"><label>Databases</label><input type="text" id="int-skills-databases" placeholder="MySQL, PostgreSQL, MongoDB, SQLite" oninput="onFormChange(\'internship\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🚀</div><span>Projects</span><div class="section-num">4</div></div><button class="add-btn" onclick="addEntry(\'internship\',\'project\')">+ Add Project</button></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ ATS Tip — #1 Factor for Interns</div><div class="ats-tip-text">Add GitHub + Live Demo links to EVERY project. Quantify impact: "Used by 200+ students", "Achieved 94% accuracy".</div></div>'
++'<div id="int-projects-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">💼</div><span>Experience</span><div class="section-num">5</div></div><button class="add-btn" onclick="addEntry(\'internship\',\'experience\')">+ Add</button></div>'
++'<div id="int-experience-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🏆</div><span>Certifications</span><div class="section-num">6</div></div><button class="add-btn" onclick="addEntry(\'internship\',\'certification\')">+ Add</button></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">💡 Free Certs</div><div class="ats-tip-text">Google, AWS Free Tier, Meta, Microsoft Learn, Coursera (audit), edX, NPTEL, freeCodeCamp — all add ATS weight.</div></div>'
++'<div id="int-certifications-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">⭐</div><span>Extras</span><div class="section-num">7</div></div></div>'
++'<div class="form-grid">'
++'<div class="form-group full"><label>Extracurricular Activities / Leadership</label><textarea id="int-extracurriculars" rows="3" placeholder="Head of Technical Team, IEEE Student Chapter (2023-24)&#10;Organized Hackathon with 150+ participants" oninput="onFormChange(\'internship\')"></textarea></div>'
++'<div class="form-group full"><label>Awards &amp; Achievements</label><textarea id="int-awards" rows="2" placeholder="1st Place, National Coding Competition 2024&#10;Best Project Award, College Tech Fest" oninput="onFormChange(\'internship\')"></textarea></div>'
++'</div></div>'
+
++'<div class="form-actions">'
++'<button class="btn-primary" onclick="generateResume(\'internship\')">⚡ Generate ATS Resume</button>'
++'<button class="btn-secondary" onclick="clearForm(\'internship\')">↺ Reset</button>'
++'<button class="btn-pdf" onclick="downloadPDF(\'internship\')">⬇ PDF</button>'
++'</div>'
++'</div>'  /* end form-internship */
+
+/* ── FRESHER FORM ── */
++'<div id="form-fresher" class="resume-form-page" data-type="fresher" style="display:none">'
++'<div class="form-header"><div class="form-type-badge" style="background:rgba(124,92,252,.08);border-color:rgba(124,92,252,.25);color:var(--accent-violet)">🌱 Fresher</div><h2 class="form-title">Fresher Resume Builder</h2><p class="form-subtitle">Craft a compelling entry-level resume that stands out in ATS systems, showcasing your academic excellence, projects, and internship experience.</p></div>'
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">👤</div><span>Personal Information</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="fre-name" placeholder="e.g. Arjun Krishnamurthy" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Target Job Title</label><input type="text" id="fre-targetRole" placeholder="e.g. Junior Software Developer" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="fre-email" placeholder="your@email.com" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Phone</label><input type="tel" id="fre-phone" placeholder="+91 9876543210" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Location</label><input type="text" id="fre-location" placeholder="Bangalore, India" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>LinkedIn <span class="optional">(+3 ATS pts)</span></label><input type="url" id="fre-linkedin" placeholder="linkedin.com/in/yourname" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>GitHub <span class="optional">(+2 ATS pts)</span></label><input type="url" id="fre-github" placeholder="github.com/yourusername" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Portfolio <span class="optional">(+2 ATS pts)</span></label><input type="url" id="fre-portfolio" placeholder="yourname.dev" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Blog / Medium <span class="optional">(+2 ATS pts)</span></label><input type="url" id="fre-blog" placeholder="medium.com/@yourname" oninput="onFormChange(\'fresher\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">📝</div><span>Professional Summary</span></div></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ ATS Tip</div><div class="ats-tip-text">Include: years of study, top 3 skills, target role keywords, and one quantified achievement. Keep it 40-60 words.</div></div>'
++'<div class="form-group"><label>Professional Summary <span class="optional">(40-60 words optimal)</span></label><textarea id="fre-summary" rows="4" placeholder="Motivated CS graduate with expertise in Python, React, and ML. Built 4 production projects with 500+ GitHub stars. Seeking to leverage analytical skills and internship experience to deliver measurable impact from day one." oninput="onFormChange(\'fresher\')"></textarea><div id="fre-summary-count" class="field-hint">0 words — aim for 40-60 words</div></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🎓</div><span>Education</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>University / College</label><input type="text" id="fre-edu-university" placeholder="e.g. VIT University" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Degree</label><select id="fre-edu-degree" onchange="onFormChange(\'fresher\')"><option value="">Select...</option><option>B.Tech</option><option>B.E.</option><option>BCA</option><option>B.Sc (CS)</option><option>MCA</option><option>M.Tech</option><option>MBA</option></select></div>'
++'<div class="form-group"><label>Major / Specialization</label><input type="text" id="fre-edu-major" placeholder="Computer Science & Engineering" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>Graduation Year</label><input type="text" id="fre-edu-gradYear" placeholder="e.g. June 2025" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group"><label>CGPA / GPA</label><input type="number" id="fre-edu-gpa" placeholder="e.g. 8.7" min="0" max="10" step="0.1" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group full"><label>Relevant Coursework</label><input type="text" id="fre-edu-coursework" placeholder="Data Structures, Algorithms, DBMS, Operating Systems, Machine Learning" oninput="onFormChange(\'fresher\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">⚙️</div><span>Technical Skills</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group full"><label>Programming Languages</label><input type="text" id="fre-skills-languages" placeholder="Python, JavaScript, Java, TypeScript, Go, SQL" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group full"><label>Frameworks / Libraries</label><input type="text" id="fre-skills-frameworks" placeholder="React, Node.js, FastAPI, Django, TensorFlow, PyTorch" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group full"><label>Cloud &amp; DevOps</label><input type="text" id="fre-skills-cloud" placeholder="AWS EC2/S3, GCP, Docker, GitHub Actions, Linux" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group full"><label>Databases &amp; Tools</label><input type="text" id="fre-skills-tools" placeholder="MySQL, MongoDB, PostgreSQL, Redis, Git, Postman" oninput="onFormChange(\'fresher\')"></div>'
++'<div class="form-group full"><label>Soft Skills</label><input type="text" id="fre-skills-soft" placeholder="Problem Solving, Team Collaboration, Communication" oninput="onFormChange(\'fresher\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🚀</div><span>Projects &amp; Portfolio</span></div><button class="add-btn" onclick="addEntry(\'fresher\',\'project\')">+ Add Project</button></div>'
++'<div id="fre-projects-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">💼</div><span>Internship / Work Experience</span></div><button class="add-btn" onclick="addEntry(\'fresher\',\'experience\')">+ Add</button></div>'
++'<div id="fre-experience-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🏆</div><span>Certifications</span></div><button class="add-btn" onclick="addEntry(\'fresher\',\'certification\')">+ Add</button></div>'
++'<div id="fre-certifications-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">📰</div><span>Publications &amp; Blog Posts</span></div><button class="add-btn" onclick="addEntry(\'fresher\',\'publication\')">+ Add</button></div>'
++'<div id="fre-publications-container"></div>'
++'<div class="form-group" style="margin-top:12px"><label>Awards &amp; Achievements</label><textarea id="fre-awards" rows="2" placeholder="Top 5% National Coding Competition 2024&#10;Best Final Year Project Award, June 2025" oninput="onFormChange(\'fresher\')"></textarea></div></div>'
+
++'<div class="form-actions">'
++'<button class="btn-primary" style="background:linear-gradient(135deg,var(--accent-violet),#a56bfc)" onclick="generateResume(\'fresher\')">⚡ Generate ATS Resume</button>'
++'<button class="btn-secondary" onclick="clearForm(\'fresher\')">↺ Reset</button>'
++'<button class="btn-pdf" onclick="downloadPDF(\'fresher\')">⬇ PDF</button>'
++'</div>'
++'</div>'  /* end form-fresher */
+
+/* ── PROFESSIONAL FORM ── */
++'<div id="form-professional" class="resume-form-page" data-type="professional" style="display:none">'
++'<div class="form-header"><div class="form-type-badge" style="background:rgba(0,229,160,.08);border-color:rgba(0,229,160,.25);color:var(--accent-green)">💼 Professional</div><h2 class="form-title">Professional Resume Builder</h2><p class="form-subtitle">Build a high-impact mid-career resume with quantified achievements, technical depth, and strategic keyword placement to beat ATS at leading companies.</p></div>'
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">👤</div><span>Personal Information</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="pro-name" placeholder="e.g. Rajesh Venkataraman" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Current Job Title</label><input type="text" id="pro-currentTitle" placeholder="e.g. Senior Software Engineer" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Target Role</label><input type="text" id="pro-targetRole" placeholder="e.g. Staff Engineer / Engineering Manager" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="pro-email" placeholder="your@email.com" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Phone</label><input type="tel" id="pro-phone" placeholder="+91 9876543210" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Location</label><input type="text" id="pro-location" placeholder="Hyderabad, India" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>LinkedIn <span class="optional">(+3 ATS pts)</span></label><input type="url" id="pro-linkedin" placeholder="linkedin.com/in/yourname" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>GitHub <span class="optional">(+2 ATS pts)</span></label><input type="url" id="pro-github" placeholder="github.com/yourusername" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Portfolio / Tech Blog</label><input type="url" id="pro-portfolio" placeholder="yourname.dev" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Blog / Publications URL</label><input type="url" id="pro-blog" placeholder="medium.com/@yourname" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Twitter / X Handle</label><input type="text" id="pro-twitter" placeholder="@yourhandle" oninput="onFormChange(\'professional\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">📝</div><span>Professional Summary</span></div></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ CAR Framework</div><div class="ats-tip-text">Include: Years of experience + primary specialization + 2 quantified achievements + target role alignment. Mirror exact JD language. 40-80 words.</div></div>'
++'<div class="form-group"><label>Professional Summary</label><textarea id="pro-summary" rows="5" placeholder="Senior Software Engineer with 7+ years building scalable distributed systems at fintech startups. Led migration to microservices, reducing latency by 65% and saving $2M annually. Expert in Go, Python, Kubernetes, AWS. Seeking Staff Engineer role to architect enterprise-grade systems." oninput="onFormChange(\'professional\')"></textarea><div id="pro-summary-count" class="field-hint">0 words — aim for 40-80 words</div></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">💼</div><span>Work Experience</span></div><button class="add-btn" onclick="addEntry(\'professional\',\'experience\')">+ Add Role</button></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ CAR Method</div><div class="ats-tip-text">Every bullet: [Strong Verb] + [Specific Action] + [Quantified Result]. E.g., "Architected payment pipeline processing 10M+ daily transactions, reducing failures by 99.7%"</div></div>'
++'<div id="pro-experience-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">⚙️</div><span>Core Skills &amp; Technologies</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group full"><label>Primary Programming Languages</label><input type="text" id="pro-skills-languages" placeholder="Go, Python, TypeScript, Rust, Java, C++" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group full"><label>Frameworks &amp; Architectures</label><input type="text" id="pro-skills-frameworks" placeholder="Microservices, Event-Driven, gRPC, GraphQL, React, FastAPI" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group full"><label>Cloud &amp; Infrastructure</label><input type="text" id="pro-skills-cloud" placeholder="AWS (ECS, Lambda, RDS), GCP, Kubernetes, Terraform, Docker, CI/CD" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group full"><label>Data &amp; Databases</label><input type="text" id="pro-skills-data" placeholder="PostgreSQL, Redis, Kafka, Elasticsearch, Snowflake, MongoDB" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group full"><label>Methodologies &amp; Practices</label><input type="text" id="pro-skills-practices" placeholder="Agile/Scrum, TDD, DDD, System Design, Technical Leadership" oninput="onFormChange(\'professional\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🚀</div><span>Key Projects &amp; Open Source</span></div><button class="add-btn" onclick="addEntry(\'professional\',\'project\')">+ Add</button></div>'
++'<div id="pro-projects-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🏆</div><span>Certifications</span></div><button class="add-btn" onclick="addEntry(\'professional\',\'certification\')">+ Add</button></div>'
++'<div id="pro-certifications-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">📰</div><span>Publications, Talks &amp; Blog Posts</span></div><button class="add-btn" onclick="addEntry(\'professional\',\'publication\')">+ Add</button></div>'
++'<div id="pro-publications-container"></div>'
++'<div class="section-header" style="margin-top:14px"><div class="section-title"><div class="section-icon">🎓</div><span>Education</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>Degree</label><input type="text" id="pro-edu-degree" placeholder="B.Tech Computer Science" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>University</label><input type="text" id="pro-edu-university" placeholder="NIT Trichy" oninput="onFormChange(\'professional\')"></div>'
++'<div class="form-group"><label>Graduation Year</label><input type="text" id="pro-edu-gradYear" placeholder="2018" oninput="onFormChange(\'professional\')"></div>'
++'</div>'
++'<div class="form-group" style="margin-top:12px"><label>Awards &amp; Recognition</label><textarea id="pro-awards" rows="2" placeholder="Innovation Award 2023, Flipkart&#10;Top 40 Under 40 Engineers — Economic Times, 2024" oninput="onFormChange(\'professional\')"></textarea></div></div>'
+
++'<div class="form-actions">'
++'<button class="btn-primary" style="background:linear-gradient(135deg,var(--accent-green),#00b8a0);color:#0a0a1a" onclick="generateResume(\'professional\')">⚡ Generate ATS Resume</button>'
++'<button class="btn-secondary" onclick="clearForm(\'professional\')">↺ Reset</button>'
++'<button class="btn-pdf" onclick="downloadPDF(\'professional\')">⬇ PDF</button>'
++'</div>'
++'</div>'  /* end form-professional */
+
+/* ── EXECUTIVE FORM ── */
++'<div id="form-executive" class="resume-form-page" data-type="executive" style="display:none">'
++'<div class="form-header"><div class="form-type-badge" style="background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.25);color:var(--accent-amber)">♟ Executive</div><h2 class="form-title">Executive Resume Builder</h2><p class="form-subtitle">Craft a board-level resume showcasing P&amp;L ownership, organizational scale, strategic impact, and thought leadership — optimized for C-Suite ATS and executive search firms.</p></div>'
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">👤</div><span>Executive Identity</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="exe-name" placeholder="e.g. Dr. Suresh Raghunathan" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Executive Title</label><input type="text" id="exe-currentTitle" placeholder="e.g. Chief Technology Officer | CTO" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Executive Level</label><select id="exe-level" onchange="onFormChange(\'executive\')"><option value="">Select...</option><option>C-Suite (CEO, CTO, CFO, COO)</option><option>SVP / EVP</option><option>Vice President (VP)</option><option>Director / Senior Director</option><option>Managing Director</option><option>Board Member / Advisor</option></select></div>'
++'<div class="form-group"><label>Industry Vertical</label><select id="exe-industry" onchange="onFormChange(\'executive\')"><option value="">Select...</option><option>Technology / SaaS</option><option>Financial Services / FinTech</option><option>Healthcare / BioTech</option><option>Manufacturing / Industrial</option><option>Retail / E-Commerce</option><option>Consulting / Advisory</option><option>Private Equity / VC</option></select></div>'
++'<div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="exe-email" placeholder="firstname@company.com" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Phone</label><input type="tel" id="exe-phone" placeholder="+91 9876543210" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Location</label><input type="text" id="exe-location" placeholder="Mumbai, India" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>LinkedIn URL <span class="optional">(critical for exec search)</span></label><input type="url" id="exe-linkedin" placeholder="linkedin.com/in/yourname" oninput="onFormChange(\'executive\')"><div class="input-tip">⚡ 95% of executive search firms verify LinkedIn before contact</div></div>'
++'<div class="form-group"><label>Personal Brand / Blog URL</label><input type="url" id="exe-blog" placeholder="yourname.com or Forbes contributor link" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Twitter / X Handle</label><input type="text" id="exe-twitter" placeholder="@yourhandle" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>GitHub / Portfolio</label><input type="url" id="exe-github" placeholder="For tech executives" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Company Website / Profile</label><input type="url" id="exe-companyUrl" placeholder="yourcompany.com/team/yourname" oninput="onFormChange(\'executive\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">📝</div><span>Executive Summary</span></div></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ Formula</div><div class="ats-tip-text">[Title] + [Years/Scope] + [#1 Strategic Achievement with $] + [Unique Value Proposition]. Include P&amp;L scale, team size, and one transformational outcome. 60-100 words.</div></div>'
++'<div class="form-group"><label>Executive Summary <span class="optional">(60-100 words)</span></label><textarea id="exe-summary" rows="6" placeholder="Transformational CTO with 18+ years building enterprise technology organizations. Led $500M digital transformation at TechCorp, reducing operational costs by $120M while scaling to 50M+ users. P&amp;L ownership of $200M budget. Led 800-person global engineering org across 6 countries. Advisor to 3 unicorn startups. Keynote speaker at AWS re:Invent and Gartner IT Symposium." oninput="onFormChange(\'executive\')"></textarea><div id="exe-summary-count" class="field-hint">0 words — aim for 60-100 words with financial metrics</div></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🎯</div><span>Core Competencies</span></div></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ Highest ATS-Value Section</div><div class="ats-tip-text">List 12-18 phrases mirroring C-Suite JD language: P&amp;L Management, Digital Transformation, M&amp;A Integration, Board Governance, Organizational Design.</div></div>'
++'<div class="form-group"><label>Core Competencies <span class="optional">(comma-separated, 12-18 phrases)</span></label><textarea id="exe-competencies" rows="4" placeholder="P&amp;L Management, Digital Transformation, M&amp;A &amp; Integration, Board Governance, Organizational Design, Strategic Planning, Enterprise Architecture, Talent Development, Change Management, Revenue Growth, Capital Allocation, Risk Management, Global Operations, Innovation Leadership" oninput="onFormChange(\'executive\')"></textarea></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">💼</div><span>Executive Experience</span></div><button class="add-btn" onclick="addEntry(\'executive\',\'experience\')">+ Add Role</button></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ Mandatory Formula</div><div class="ats-tip-text">Every bullet: Financial Scale ($M/$B) + Team Size + % Improvement OR Transformation Scope. "Spearheaded $300M cloud migration for 50M users, reducing TCO by 40%"</div></div>'
++'<div id="exe-experience-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🏛️</div><span>Board &amp; Advisory Roles</span></div></div>'
++'<div class="ats-tip-box"><div class="ats-tip-title">⚡ Executive Differentiator</div><div class="ats-tip-text">Even non-profit boards and startup advisory roles signal executive gravitas. Significantly boosts C-Suite ATS ranking.</div></div>'
++'<div class="form-group"><label>Board &amp; Advisory Positions <span class="optional">(one per line)</span></label><textarea id="exe-boardRoles" rows="4" placeholder="Independent Director, XYZ FinTech Pvt Ltd — Board of Directors (2022–Present)&#10;Strategic Advisor, ABC AI Startup — Seed to Series B (2021–Present)&#10;Trustee, National Digital Education Foundation (2020–Present)" oninput="onFormChange(\'executive\')"></textarea></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">📰</div><span>Publications, Speaking &amp; Media</span></div><button class="add-btn" onclick="addEntry(\'executive\',\'publication\')">+ Add</button></div>'
++'<div id="exe-publications-container"></div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">⚙️</div><span>Leadership &amp; Technical Skills</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group full"><label>Strategic Leadership Skills</label><input type="text" id="exe-skills-leadership" placeholder="P&amp;L Management, Strategic Planning, M&amp;A, Board Relations, Fundraising" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group full"><label>Technical Domains</label><input type="text" id="exe-skills-technical" placeholder="Cloud Architecture, AI/ML Strategy, Cybersecurity, Digital Transformation" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group full"><label>Global &amp; Operations</label><input type="text" id="exe-skills-ops" placeholder="Global P&amp;L ($500M+), Multi-country Operations, Regulatory Compliance, ESG" oninput="onFormChange(\'executive\')"></div>'
++'</div></div>'
+
++'<div class="form-section"><div class="section-header"><div class="section-title"><div class="section-icon">🎓</div><span>Education &amp; Credentials</span></div></div>'
++'<div class="form-grid">'
++'<div class="form-group"><label>Primary Degree</label><input type="text" id="exe-edu-degree1" placeholder="MBA, Finance" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Institution</label><input type="text" id="exe-edu-school1" placeholder="IIM Ahmedabad" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Year</label><input type="text" id="exe-edu-year1" placeholder="2005" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Secondary Degree</label><input type="text" id="exe-edu-degree2" placeholder="B.Tech, Computer Science" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Institution</label><input type="text" id="exe-edu-school2" placeholder="IIT Bombay" oninput="onFormChange(\'executive\')"></div>'
++'<div class="form-group"><label>Year</label><input type="text" id="exe-edu-year2" placeholder="2002" oninput="onFormChange(\'executive\')"></div>'
++'</div>'
++'<div class="section-header" style="margin-top:12px"><div class="section-title" style="font-size:13px">Certifications &amp; Professional Affiliations</div><button class="add-btn" onclick="addEntry(\'executive\',\'certification\')">+ Add</button></div>'
++'<div id="exe-certifications-container"></div>'
++'<div class="form-group" style="margin-top:12px"><label>Awards &amp; Recognition</label><textarea id="exe-awards" rows="3" placeholder="Economic Times \'40 Under 40 Technology Leaders 2023\'&#10;Nasscom \'Digital Transformation Leader of the Year 2022\'&#10;Forbes India \'30 Most Influential CXOs 2021\'" oninput="onFormChange(\'executive\')"></textarea></div></div>'
+
++'<div class="form-actions">'
++'<button class="btn-primary" style="background:linear-gradient(135deg,var(--accent-amber),#ffca60);color:#0a0a1a" onclick="generateResume(\'executive\')">⚡ Generate Executive Resume</button>'
++'<button class="btn-secondary" onclick="clearForm(\'executive\')">↺ Reset</button>'
++'<button class="btn-pdf" onclick="downloadPDF(\'executive\')">⬇ PDF</button>'
++'</div>'
++'</div>';  /* end form-executive */
+
+// Seed initial entry cards
+setTimeout(function(){
+['internship','fresher','professional','executive'].forEach(function(type){
+addEntry(type,'project');
+addEntry(type,'experience');
+addEntry(type,'certification');
+});
+addEntry('fresher','publication');
+addEntry('professional','publication');
+addEntry('executive','publication');
+renderATS(null);
+updatePreview('');
+},80);
+
+})();
+</script>
+</div><!-- .app-wrapper -->
+</body>
+</html>
