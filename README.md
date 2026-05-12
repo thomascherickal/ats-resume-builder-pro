@@ -46,38 +46,6 @@ Over **75% of resumes are rejected by ATS bots** before a human ever sees them �
 
  
 
-## 🗂️ Table of Contents
-
- 
-
-1. [Resume Types](#-resume-types)
-
-2. [ATS Expert Systems](#-ats-expert-systems)
-
-3. [Features in Detail](#-features-in-detail)
-
-4. [Project Structure](#-project-structure)
-
-5. [Getting Started](#-getting-started)
-
-6. [How to Use](#-how-to-use)
-
-7. [ATS Scoring Explained](#-ats-scoring-explained)
-
-8. [PDF Export](#-pdf-export)
-
-9. [Tech Stack](#-tech-stack)
-
-10. [Design System](#-design-system)
-
-11. [Known Limitations](#-known-limitations)
-
-12. [Credits & License](#-credits--license)
-
----
-
- 
-
 ## 🎓 Resume Types
 
  
@@ -300,58 +268,6 @@ This builder supports **four distinct resume profiles**, each with its own form 
 
  
 
-## 🤖 ATS Expert Systems
-
- 
-
-Each resume type has its own standalone ATS analyzer, implemented as a JavaScript IIFE module:
-
- 
-
-```
-
-js/ats-engine.js        ← Shared utilities (action verbs, metric patterns)
-
-js/ats-internship.js    ← InternshipATS expert system
-
-js/ats-fresher.js       ← FresherATS expert system
-
-js/ats-professional.js  ← ProfessionalATS expert system
-
-js/ats-executive.js     ← ExecutiveATS expert system
-
-```
-
- 
-
-### 🔬 Shared ATS Engine Utilities
-
- 
-
-The base `ATSEngine` object provides reusable scoring functions:
-
- 
-
-| Function | What It Checks |
-
-|---|---|
-
-| `checkContactInfo(data)` | Name, email, phone, location completeness |
-
-| `checkActionVerbs(text)` | 60+ action verbs (achieved, architected, scaled, etc.) |
-
-| `checkQuantifiedAchievements(text)` | Regex for %, $, xN, "reduced by", "led team of N" |
-
-| `checkOnlinePresence(data)` | LinkedIn, GitHub, portfolio, blog URLs |
-
-| `checkSkillsSection(data)` | Skill count across all categories |
-
-| `getGrade(score)` | Grade labels from "ATS Champion" → "ATS Unfriendly" |
-
-| `getScoreColor(score)` | Dynamic hex color for SVG score circle |
-
- 
-
 ### 📊 ATS Grade Scale
 
  
@@ -513,8 +429,6 @@ xdg-open standalone.html   # Linux
 > ✅ Works offline, works from a USB drive, works anywhere.
 
  
-
----
 
  
 
@@ -751,43 +665,6 @@ In the browser print dialog:
 ## 🛠️ Tech Stack
 
  
-
-### Frontend
-
- 
-
-| Technology | Version | Purpose |
-
-|---|---|---|
-
-| **HTML5** | Latest | Semantic structure |
-
-| **CSS3** | Latest | Custom properties, grid, flexbox |
-
-| **Vanilla JavaScript** | ES6+ | No frameworks, no build tools |
-
-| **Open Sans** | via Google Fonts | UI and resume typography |
-
-| **JetBrains Mono** | via Google Fonts | Code-like monospace labels |
-
- 
-
-### Architecture Patterns
-
- 
-
-- **IIFE Module Pattern** — each JS file is a self-contained `(function(){})()` module
-
-- **Namespace objects** — `ATSEngine`, `InternshipATS`, `ResumeBuilder`, `PDFExport`, `AppState`
-
-- **Event-driven debounce** — form changes trigger deferred analysis via `setTimeout`
-
-- **DOM injection** — resume HTML generated as a string and injected via `innerHTML`
-
-- **No build pipeline** — no Webpack, Vite, Babel, or npm. Open and it works.
-
-
-
 ### Why No Framework?
 
  
@@ -856,7 +733,7 @@ In the browser print dialog:
 
  
 
-## 🙌 Credits & License
+## 🙌 Credits
 
  
 
@@ -868,7 +745,7 @@ In the browser print dialog:
 
 **Thomas Cherickal**
 
-AI Consultant · Open Source Gen AI Developer · Technical Writer · AI Mentor · Independent Research Blogger 
+AI Consultant · Open Source Gen AI Developer · Technical Writer · Website Builder · Independent Research Blogger · SEO | AEO | GEO Expert
 
  
 
@@ -878,7 +755,7 @@ AI Consultant · Open Source Gen AI Developer · Technical Writer · AI Mentor �
 
  
 
-*Expertise: Gen AI · SLMs/LLMs · AI Agents · Quantum · Blockchain · Web3 · Cybersecurity · Python · Golang · Rust · Mojo*
+*Expertise: Gen AI · SLMs/LLMs · AI Agents · Quantum · Blockchain · Web3 · Cybersecurity · Python · Golang · Rust · Mojo · SEO | AEO | GEO*
 
  
 
