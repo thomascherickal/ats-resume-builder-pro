@@ -1,0 +1,23 @@
+{
+  "name": "ats-resume-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test tests/ui.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomascherickal/ats-resume-builder-pro.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thomascherickal/ats-resume-builder-pro/issues"
+  },
+  "homepage": "https://github.com/thomascherickal/ats-resume-builder-pro#readme",
+  "devDependencies": {
+    "jsdom": "^24.1.3"
+  }
+}
