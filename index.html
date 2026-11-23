@@ -243,6 +243,14 @@ select option{background:var(--bg-card);color:var(--text-primary)}
 .jd-chip{font-size:11px;font-family:var(--font-mono);padding:2px 7px;border-radius:10px;border:1px solid transparent}
 .jd-chip.matched{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.3);color:var(--accent-green)}
 .jd-chip.missing{background:rgba(255,69,96,.1);border-color:rgba(255,69,96,.3);color:var(--accent-red)}
+.score-gap-box{background:rgba(255,176,32,.07);border:1px solid rgba(255,176,32,.3);border-radius:var(--radius-md);padding:10px 12px;margin:10px 0 14px;font-size:12px;line-height:1.5;color:var(--text-primary)}
+.score-gap-title{font-weight:700;color:var(--accent-amber);margin-bottom:4px}
+.score-gap-perfect{background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.3);border-radius:var(--radius-md);padding:8px 12px;margin:10px 0 14px;font-size:12px;font-weight:700;color:var(--accent-green);text-align:center}
+.breakdown-gap{margin-top:6px;padding:7px 9px;background:rgba(255,255,255,.03);border-left:2px solid var(--accent-amber);border-radius:0 4px 4px 0;font-size:11.5px;color:var(--text-secondary)}
+.breakdown-gap-why{font-weight:600;color:var(--text-primary);margin-bottom:3px}
+.breakdown-fixes{margin:3px 0 0 16px;padding:0}
+.breakdown-fixes li{margin-bottom:2px;color:var(--text-secondary)}
+.breakdown-perfect{margin-top:4px;font-size:11px;color:var(--accent-green);font-weight:600}
 @media(max-width:960px){.app-main{grid-template-columns:1fr}.preview-panel{position:static;height:auto;border-top:1px solid var(--border)}} @media(max-width:768px){.app-header{padding:24px 16px;}.brand-title{font-size:28px;}.brand-subtitle{font-size:16px;}.brand-icon{width:56px;height:56px;font-size:28px;}}
 </style>
 </head>
@@ -902,11 +910,36 @@ function updatePreview(html){var c=document.getElementById('resume-preview-conta
 function runATS(type,data){switch(type){case'internship':return InternshipATS.analyze(data);case'fresher':return FresherATS.analyze(data);case'professional':return ProfessionalATS.analyze(data);case'executive':return ExecutiveATS.analyze(data);}return null;}
 function renderJDMatch(d){var badge=document.getElementById('jd-match-badge'),det=document.getElementById('jd-match-details');if(!badge||!det)return;var jd=AppState.targetJD||'';if(jd.trim().length<20){badge.textContent='Paste JD';badge.style.color='var(--accent-blue)';det.innerHTML='';return;}var m=ATSEngine.analyzeJDMatch(d||{},jd);if(!m.totalKeywords){badge.textContent='No keywords';det.innerHTML='';return;}badge.textContent=m.matchPct+'% Match';badge.style.color=m.matchPct>=70?'#00e5a0':m.matchPct>=45?'#ffb020':'#ff4560';var chips=m.matched.slice(0,8).map(function(k){return'<span class="jd-chip matched">✓ '+k+'</span>';}).concat(m.missing.slice(0,8).map(function(k){return'<span class="jd-chip missing">+ '+k+'</span>';})).join('');det.innerHTML='<div class="jd-chips">'+chips+'</div>';}
 function renderATS(r){var panel=document.getElementById('ats-score-container');if(!panel)return;if(!r){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon">🎯</div><div class="empty-state-title">ATS Score</div><div class="empty-state-text">Start filling in your resume to see your real-time ATS score and expert optimization tips.</div></div>';return;}var sc=r.score||0,col=ATSEngine.getScoreColor(sc),circ=2*Math.PI*44,off=circ-(sc/100)*circ;
-var catH=(r.categories||[]).map(function(c){var bc=c.score/c.max>=0.75?'#00e5a0':c.score/c.max>=0.5?'#ffb020':'#ff4560';var pct=c.max>0?Math.round(c.score/c.max*100):0;return'<div class="breakdown-item"><div class="breakdown-row"><span class="breakdown-name">'+c.name+'</span><span class="breakdown-score" style="color:'+bc+'">'+c.score+'/'+c.max+'</span></div><div class="breakdown-bar"><div class="breakdown-fill" style="width:'+pct+'%;background:'+bc+'"></div></div></div>';}).join('');
+var cats=r.categories||[];
+var belowCats=cats.filter(function(c){return c.max>0&&c.score<c.max;});
+var gapBanner='';
+if(sc<100){
+  var missingPts=Math.max(0,100-sc);
+  var catSummary=belowCats.map(function(c){return c.name+' ('+c.score+'/'+c.max+')';}).join(', ');
+  gapBanner='<div class="score-gap-box"><div class="score-gap-title">⚠️ Why your score is below 100% ('+sc+'% — missing '+missingPts+' pts)</div><div>'+belowCats.length+' '+(belowCats.length===1?'category is':'categories are')+' below 100%'+(catSummary?': <strong>'+catSummary+'</strong>':'')+'. Complete the changes listed under each category below to reach 100%.</div></div>';
+}else{
+  gapBanner='<div class="score-gap-perfect">✅ Perfect 100% ATS Score — all categories meet 2026 ATS standards!</div>';
+}
+var catH=cats.map(function(c){
+  var bc=c.score/c.max>=0.75?'#00e5a0':c.score/c.max>=0.5?'#ffb020':'#ff4560';
+  var pct=c.max>0?Math.round(c.score/c.max*100):0;
+  var gapHtml='';
+  if(c.max>0&&c.score<c.max){
+    var diff=c.max-c.score;
+    var fixes=(c.suggestions||[]).filter(function(s){return s&&s.type!=='good'&&s.text;});
+    var fixItems=fixes.length
+      ? fixes.map(function(s){return'<li>'+s.text+(s.points?' <strong>(+'+s.points+' pts)</strong>':'')+'</li>';}).join('')
+      : '<li>Add stronger, metric-backed details in this section to earn the remaining '+diff+' pts.</li>';
+    gapHtml='<div class="breakdown-gap"><div class="breakdown-gap-why">Why below 100%: '+pct+'% ('+diff+' '+(diff===1?'pt':'pts')+' short of '+c.max+'/'+c.max+')</div><div><strong>Changes to reach 100%:</strong><ul class="breakdown-fixes">'+fixItems+'</ul></div></div>';
+  }else if(c.max>0){
+    gapHtml='<div class="breakdown-perfect">✓ 100% — Full marks in this category</div>';
+  }
+  return'<div class="breakdown-item"><div class="breakdown-row"><span class="breakdown-name">'+c.name+'</span><span class="breakdown-score" style="color:'+bc+'">'+c.score+'/'+c.max+' ('+pct+'%)</span></div><div class="breakdown-bar"><div class="breakdown-fill" style="width:'+pct+'%;background:'+bc+'"></div></div>'+gapHtml+'</div>';
+}).join('');
 var allS=(r.suggestions||[]).concat(r.expertTips||[]);
 var sH=allS.map(function(s){var cls=s.type==='critical'?'critical':s.type==='good'?'good':s.type==='info'?'info':'';var ic=s.type==='critical'?'🔴':s.type==='good'?'✅':s.type==='warning'?'⚠️':'ℹ️';var pts=s.points?'<span class="suggestion-points">+'+s.points+'pts</span>':'';return'<div class="suggestion-item '+cls+'"><div class="suggestion-header"><span>'+ic+'</span><span class="suggestion-title">'+(s.type==='critical'?'Critical Fix':s.type==='good'?'Great!':s.type==='info'?'Tip':'Improvement')+'</span>'+pts+'</div><div class="suggestion-text">'+s.text+'</div></div>';}).join('');
 var gH=(r.goodItems||[]).slice(0,3).map(function(s){return'<div class="suggestion-item good"><div class="suggestion-header"><span>✅</span><span class="suggestion-title">Strength</span></div><div class="suggestion-text">'+s.text+'</div></div>';}).join('');
-panel.innerHTML='<div><div class="score-hero"><div class="score-circle"><svg aria-hidden="true" viewBox="0 0 100 100" width="110" height="110"><circle class="score-track" cx="50" cy="50" r="44"/><circle class="score-fill" cx="50" cy="50" r="44" stroke="'+col+'" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'"/></svg><div class="score-number" style="color:'+col+'">'+sc+'</div></div><div class="score-label">Nov 2026 ATS Score</div><div class="score-grade" style="color:'+col+'">'+r.grade+'</div></div><div class="ats-breakdown"><div class="breakdown-title">Score Breakdown</div>'+catH+'</div>'+(sH?'<div class="breakdown-title" style="margin-top:12px">Optimization Suggestions</div><div class="suggestions-list">'+sH+'</div>':'')+(gH?'<div class="breakdown-title" style="margin-top:12px">Your Strengths</div><div class="suggestions-list">'+gH+'</div>':'')+'</div>';}
+panel.innerHTML='<div><div class="score-hero"><div class="score-circle"><svg aria-hidden="true" viewBox="0 0 100 100" width="110" height="110"><circle class="score-track" cx="50" cy="50" r="44"/><circle class="score-fill" cx="50" cy="50" r="44" stroke="'+col+'" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'"/></svg><div class="score-number" style="color:'+col+'">'+sc+'</div></div><div class="score-label">Nov 2026 ATS Score</div><div class="score-grade" style="color:'+col+'">'+r.grade+'</div></div>'+gapBanner+'<div class="ats-breakdown"><div class="breakdown-title">Score Breakdown &amp; Path to 100%</div>'+catH+'</div>'+(sH?'<div class="breakdown-title" style="margin-top:12px">Optimization Suggestions</div><div class="suggestions-list">'+sH+'</div>':'')+(gH?'<div class="breakdown-title" style="margin-top:12px">Your Strengths</div><div class="suggestions-list">'+gH+'</div>':'')+'</div>';}
 
 function generateResume(type){var d=collectData(type);AppState.formData[type]=d;savePaneToStorage(type,d);var h=ResumeBuilder.build(type,d);AppState.currentResumeHTML=h;updatePreview(h);var r=runATS(type,d);renderATS(r);renderJDMatch(d);switchPreviewTab('preview');showToast('✅ Generated Light & Dark mode resumes! Check the preview →','success');}
 function downloadPDF(type,theme){var h=AppState.currentResumeHTML;if(!h||h.length<50){var d=collectData(type);h=ResumeBuilder.build(type,d);AppState.currentResumeHTML=h;}if(!h||h.length<20){showToast('⚠️ Fill in resume details first','error');return;}var mode=theme==='dark'?'dark':'light';PDFExport.exportPDF(h,type,(AppState.formData[type]||{}).name||'Resume',mode);showToast('📄 Opening '+(mode==='dark'?'Dark':'Light')+' Mode PDF export...','info');}
